@@ -1,0 +1,97 @@
+{
+  "name": "@eliware/elid-client",
+  "version": "9.0.0",
+  "private": false,
+  "description": "Client library for EliD using Node.js native ESM.",
+  "author": "Eliware <eliware@eliware.org>",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=26 <27"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eliware/elid-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eliware/elid-client/issues"
+  },
+  "homepage": "https://github.com/eliware/elid-client#readme",
+  "keywords": [
+    "eliware",
+    "library",
+    "template",
+    "nodejs",
+    "esm"
+  ],
+  "main": "./src/index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/index.mjs"
+    }
+  },
+  "files": [
+    "src/",
+    "index.d.ts",
+    "README.md",
+    "LICENSE",
+    "RELEASE_NOTES.md",
+    "docs/",
+    "specs/",
+    "examples/"
+  ],
+  "scripts": {
+    "test": "eliware-test",
+    "lint": "eliware-test --lint",
+    "audit": "eliware-test --audit",
+    "format": "eliware-test --format",
+    "format:check": "eliware-test --format-check",
+    "typecheck": "tsc --project tsconfig.json",
+    "pack": "eliware-test --pack"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "devDependencies": {
+    "@eliware/test": "^9.0.0",
+    "typescript": "^7.0.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.mjs"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.mjs"
+    ],
+    "coverageReporters": [
+      "text",
+      "json-summary"
+    ]
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "quoteProps": "as-needed",
+    "jsxSingleQuote": false,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "bracketSameLine": false,
+    "arrowParens": "always",
+    "proseWrap": "preserve",
+    "endOfLine": "lf"
+  },
+  "eliware": {
+    "apply": [
+      "general",
+      "library",
+      "npm-published"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": "9.0",
+  "description": "Local requirements for the EliD client library.",
+  "directives": [
+    {
+      "id": "E-100",
+      "dos": [
+        "Provide a native ESM client library for EliD with declarations, documentation, examples, and release guidance.",
+        "Implement the client API for EliD and keep package metadata aligned with this repository."
+      ],
+      "donts": ["Do not publish the inherited greeting sample API as a finished EliD client."]
+    }
+  ]
+}

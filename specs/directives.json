@@ -1,14 +1,18 @@
 {
   "version": "9.0",
-  "description": "Local requirements for the EliD client library.",
+  "description": "Local requirements for the EliD OAuth 2.1 client library.",
   "directives": [
     {
-      "id": "E-100",
+      "id": "E-220",
       "dos": [
-        "Provide a native ESM client library for EliD with declarations, documentation, examples, and release guidance.",
-        "Implement the client API for EliD and keep package metadata aligned with this repository."
+        "Provide a native ESM client library for integrating Node.js applications with EliD issuer-scoped OAuth 2.1 services.",
+        "Define a tested public API for issuer discovery, PKCE authentication, token exchange, and session management before release.",
+        "Keep package identity and metadata aligned with eliware/elid-client."
       ],
-      "donts": ["Do not publish the inherited greeting sample API as a finished EliD client."]
+      "donts": [
+        "Do not present the inherited greeting sample as EliD client functionality.",
+        "Do not document or publish client behavior until the implementation and tests establish it."
+      ]
     }
   ]
 }

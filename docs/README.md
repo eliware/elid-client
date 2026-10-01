@@ -1,6 +1,6 @@
 # Documentation
 
-This directory contains end-user guidance for @eliware/elid-client.
+This directory contains end-user guidance for the planned @eliware/elid-client SDK.
 
 ## Contents
 

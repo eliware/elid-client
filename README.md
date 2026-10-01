@@ -21,9 +21,9 @@
 
 ## Features
 
-Purpose: @eliware/elid-client provides a client library for EliD.
+Purpose: @eliware/elid-client is the planned Node.js SDK for integrating Eliware applications with EliD.
 
-The package description is: Client library for EliD using Node.js native ESM.
+The package description is: Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token exchange, and session management.
 
 - Provides a small, tested native ESM library surface.
 - Includes public declarations, examples, documentation, and release notes.
@@ -44,7 +44,7 @@ Run npm install @eliware/elid-client to install the package. This checkout decla
 
 ### Configuration
 
-This starter API has no runtime settings, environment variables, or configuration files. Derived libraries should document any runtime configuration introduced by their API; package metadata and deployment settings are not runtime configuration.
+The current sample API has no runtime settings, environment variables, or configuration files. Document any runtime configuration introduced by the EliD client API when it is defined; package metadata and deployment settings are not runtime configuration.
 
 ## Usage
 
@@ -62,7 +62,7 @@ The package entrypoint is src/index.mjs; declarations are in index.d.ts. Check t
 
 ## Development
 
-Read AGENTS.md, docs/README.md, and specs/README.md before changing the package. Source modules live under src/ and tests mirror them under tests/. The current greeting API is inherited from the library starter and should be replaced with the EliD client API as its requirements are defined.
+Read AGENTS.md, docs/README.md, and specs/README.md before changing the package. Source modules live under src/ and tests mirror them under tests/. The current greeting API is inherited starter code, not an EliD client implementation. Define and implement the public client API before release consideration.
 
 ## Testing
 
@@ -74,7 +74,7 @@ Use Node.js 26 and update tests, declarations, examples, and API documentation t
 
 ## Security
 
-The starter API uses no credentials, environment variables, or network services. Do not add secrets or private machine-specific values to source, tests, examples, or package contents.
+The current sample API uses no credentials, environment variables, or network services. Do not add secrets or private machine-specific values to source, tests, examples, or package contents.
 
 ## API
 

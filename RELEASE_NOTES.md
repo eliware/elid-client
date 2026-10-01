@@ -1,9 +1,9 @@
 # Release Notes
 
-## 9.0.0 — 2026-09-30
+## 9.0.0 — 2026-10-01
 
 ### Changed
 
-- Recreated the repository as a current Eliware library starter.
-- Added mirrored source and test layout, typed public entrypoint, runnable example, and focused documentation.
-- Aligned metadata, validation scripts, package contents, CI, and Knit deployment configuration with v9 conventions.
+- Established the `@eliware/elid-client` package identity and initial OAuth 2.1 client requirements.
+- Added package metadata and documentation for EliD issuer discovery, PKCE authentication, token exchange, and session management.
+- This source baseline is not an npm publication; the inherited greeting sample is not a released EliD client API.

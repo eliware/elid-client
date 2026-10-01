@@ -2,7 +2,7 @@
 
 ## Project
 
-Repository: `eliware/elid-client`. Purpose: maintain `@eliware/elid-client`, a Node.js 26 client library for EliD using native ESM.
+Repository: `eliware/elid-client`. Purpose: maintain `@eliware/elid-client`, the Node.js 26 OAuth 2.1 client library for EliD.
 
 ## Scope and boundaries
 
@@ -30,7 +30,7 @@ Preserve the documented public contract and update its specifications, tests, de
 
 ## Library
 
-The public runtime entrypoint is `@eliware/elid-client`, implemented by `src/index.mjs`; public declarations are in `index.d.ts`. Keep exports and declarations synchronized and test the public API. Compatibility guidance is provided in the README and release notes. Packaging limits package contents to the documented allowlist. Validate types with `npm run typecheck`, behavior and coverage with `npm test`, and consumer package contents with `eliware-test --pack` or `npm run pack` before release consideration.
+The public runtime entrypoint is `@eliware/elid-client`, implemented by `src/index.mjs`; public declarations are in `index.d.ts`. The current implementation is inherited greeting sample code; define and implement the EliD client API before release consideration. Keep exports and declarations synchronized and test the public API. Compatibility guidance is provided in the README and release notes. Packaging limits package contents to the documented allowlist. Validate types with `npm run typecheck`, behavior and coverage with `npm test`, and consumer package contents with `eliware-test --pack` or `npm run pack` before release consideration.
 
 ## npm publication
 

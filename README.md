@@ -1,5 +1,7 @@
 # [![eliware.org](https://eliware.org/logos/brand.png)](https://discord.gg/M6aTR9eTwN)
 
+Package description: Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token exchange, and session management.
+
 ## @eliware/elid-client [![npm version](https://img.shields.io/npm/v/@eliware/elid-client.svg)](https://www.npmjs.com/package/@eliware/elid-client) [![license](https://img.shields.io/github/license/eliware/elid-client.svg)](LICENSE) [![CI](https://github.com/eliware/elid-client/actions/workflows/ci.yml/badge.svg)](https://github.com/eliware/elid-client/actions/workflows/ci.yml)
 
 ## Table of Contents
@@ -23,7 +25,6 @@
 
 Purpose: @eliware/elid-client is the planned Node.js SDK for integrating Eliware applications with EliD.
 
-The package description is: Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token exchange, and session management.
 
 - Provides a small, tested native ESM library surface.
 - Includes public declarations, examples, documentation, and release notes.

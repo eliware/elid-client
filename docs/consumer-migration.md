@@ -34,11 +34,11 @@ Funnel has a separate introspection requirement in its web middleware. Its MCP e
 
 ## Mail web frontend
 
-- **Role:** The Mail frontend uses an OAuth client flow. Issue #9 reports that the public `mail-web` repository is empty.
-- **Source:** The active source repository, code owner, and migration target remain unknown. Do not start Mail migration until its owner identifies them.
-- **Configuration:** Confirm the issuer, client ID, callback URI, scopes, and resource from the active source and deployment configuration.
-- **Session and tokens:** Confirm token storage and session handling from the active source. Keep both responsibilities in the Mail frontend application.
-- **Migration:** Add the source repository after Mail's owner identifies it. Migrate its OAuth flow after the owner confirms the source and deployment configuration.
+- **Role:** The Mail frontend uses an OAuth client flow. Mail's separate release process handles this work.
+- **Source:** Mail's release process records the frontend source repository and code owner. This inventory does not list that source.
+- **Configuration:** Mail's release process records the issuer, client ID, callback URI, scopes, and resource.
+- **Session and tokens:** Keep token storage and application session handling in the Mail frontend.
+- **Migration:** Exclude Mail from this library's consumer migration order. Mail's own release process handles its OAuth flow.
 
 Do not classify `mail-server` as the frontend OAuth client unless its source confirms that role.
 
@@ -47,7 +47,7 @@ Do not classify `mail-server` as the frontend OAuth client unless its source con
 - **Role:** The reviewed source shows an HTTP API resource server for mail clients. It does not show an EliD OpenID Connect client or an MCP role.
 - **Configuration:** The web API uses `MAIL_WEB_API_TOKEN`. The reviewed server code has no EliD issuer, redirect URI, scope, or resource configuration.
 - **Session and tokens:** The server validates its own web API token. It does not request or manage EliD tokens.
-- **Migration:** Keep this client library out of the mail API. Document its OAuth frontend separately under Mail web frontend.
+- **Migration:** Keep this client library out of the mail API. Manage the Mail frontend OAuth flow through its separate release process.
 
 ## sangah-landing
 
@@ -58,13 +58,11 @@ Do not classify `mail-server` as the frontend OAuth client unless its source con
 
 ## Migration order
 
-1. Identify the Mail frontend source repository, code owner, and deployment configuration. This step blocks Mail migration until its owner supplies the source location.
-2. Migrate the Mail frontend OAuth flow after its owner provides the source and deployment configuration.
-3. Migrate docs-web after version `15.0.1` is available to consumers.
-4. Migrate Checkd's client flow and keep its separate resource-server introspection.
-5. Migrate Funnel's client flow and preserve its MCP resource checks and separate web-session introspection.
-6. Reassess the Sangah operator panel when its repository and OAuth requirements are settled.
+1. Migrate docs-web after version `15.0.1` is available to consumers.
+2. Migrate Checkd's client flow and keep its separate resource-server introspection.
+3. Migrate Funnel's client flow and preserve its MCP resource checks and separate web-session introspection.
+4. Reassess the Sangah operator panel when its repository and OAuth requirements are settled.
 
-Exclude the Mail API from OAuth client migration unless its source confirms that role.
+Manage Mail frontend OAuth through its own release process. Exclude the mail API from this client migration.
 
 The client package does not provide token introspection. Checkd and Funnel require that behavior outside the client package because they inspect incoming tokens.

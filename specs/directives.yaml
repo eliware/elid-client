@@ -61,14 +61,10 @@ directives:
         Preserve resource indicators, scopes, and audience checks when applications call
         protected resources.
       - >-
-        Examine `docs-web`, `checkd`, `funnel`, `mail-server`, `mail-web`, and `sangah-landing`
-        as separate consumers.
-      - >-
-        Identify the repository that owns the Mail frontend OAuth flow and record its issuer,
-        callback, token handling, and session responsibilities.
-      - >-
-        Record the missing Mail frontend source location as a migration blocker when the source is
-        unavailable in `mail-web`.
+        Examine `docs-web`, `checkd`, `funnel`, `mail-server`, and `sangah-landing` as
+        consumers.
+      - Manage Mail frontend OAuth through its own release process.
+      - Exclude the Mail frontend and mail-server API from this library's migration order.
       - >-
         Keep the mail-server API separate from the Mail frontend OAuth client unless its source
         confirms that role.
@@ -76,18 +72,20 @@ directives:
         Include the planned Sangah requests operator panel as a future `sangah-landing`
         integration.
       - >-
-        Record each consumer's OAuth role, issuer, redirects, scopes, resources, session model,
-        token use, and migration steps.
+        Record each in-scope consumer's OAuth role, issuer, redirects, scopes, resources, session
+        model, token use, and migration steps.
       - >-
-        Identify each consumer's OpenID Connect client, API resource server, MCP client, and MCP
-        server roles.
+        Identify each in-scope consumer's OpenID Connect client, API resource server, MCP client,
+        and MCP server roles.
       - >-
-        Compare consumers before choosing the first migration, then replace its custom protocol
-        handling.
+        Compare in-scope consumers before choosing the first migration, then replace its custom
+        protocol handling.
       - >-
         Keep user provisioning, application roles, routes, and authorization policy in each
         owning application.
-      - Document migration steps for other consumers and the planned requests operator panel.
+      - >-
+        Document migration steps for remaining in-scope consumers and the planned requests
+        operator panel.
       - Add timeouts, response checks, safe retries where allowed, and typed protocol errors.
       - >-
         Redact diagnostics and exclude credentials, authorization codes, tokens, verifiers, and

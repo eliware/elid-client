@@ -39,6 +39,7 @@ test.each([
   [{ id_token_signing_alg_values_supported: ["none", "HS256"] }],
   [{ id_token_signing_alg_values_supported: undefined }],
   [{ scopes_supported: ["openid", 7] }],
+  [{ scopes_supported: ["openid", "openid"] }],
   [{ scopes_supported: "openid profile" }],
 ])("rejects unsupported protocol capabilities", (overrides) => {
   expect(() => validateCapabilities(capabilities(overrides))).toThrow(

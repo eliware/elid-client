@@ -53,7 +53,8 @@ export function validateCapabilities(metadata) {
   if (
     metadata.scopes_supported !== undefined &&
     (!Array.isArray(metadata.scopes_supported) ||
-      metadata.scopes_supported.some((scope) => typeof scope !== "string"))
+      metadata.scopes_supported.some((scope) => typeof scope !== "string") ||
+      new Set(metadata.scopes_supported).size !== metadata.scopes_supported.length)
   ) {
     throw new ElidClientError(
       "unsupported_provider",

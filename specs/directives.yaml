@@ -1,0 +1,11 @@
+version: "15.0"
+description: Local requirements for the EliD OAuth 2.1 client library.
+directives:
+  - id: E-1331.0
+    dos:
+      - >
+        Build the EliD OAuth 2.1 client API with native ESM, types, documentation, tests,
+        and examples.
+      - Keep the package identity and public API aligned with the repository.
+    donts:
+      - Do not call the scaffold greeting API the finished EliD client.

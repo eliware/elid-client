@@ -1,9 +1,11 @@
 # Release Notes
 
-## 9.0.0 — 2026-10-01
+## 15.0.1 — 2026-10-28
+
+### Added
+
+- Add the initial elid-client scaffold with a greeting sample, declarations, tests, documentation, and examples.
 
 ### Changed
 
-- Established the `@eliware/elid-client` package identity and initial OAuth 2.1 client requirements.
-- Added package metadata and documentation for EliD issuer discovery, PKCE authentication, token exchange, and session management.
-- This source baseline is not an npm publication; the inherited greeting sample is not a released EliD client API.
+- Set package metadata and repository guidance for the EliD OAuth 2.1 client library.

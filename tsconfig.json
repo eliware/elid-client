@@ -6,5 +6,5 @@
     "noEmit": true,
     "skipLibCheck": false
   },
-  "files": ["index.d.ts"]
+  "files": ["src/index.d.ts"]
 }

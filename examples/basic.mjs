@@ -1,3 +1,3 @@
-import { createGreeting } from "@eliware/elid-client";
+import { createBasicExampleGreeting } from "../src/examples/basic.mjs";
 
-console.log(createGreeting("Eli"));
+console.log(createBasicExampleGreeting());

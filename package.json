@@ -1,22 +1,8 @@
 {
   "name": "@eliware/elid-client",
-  "version": "9.0.0",
-  "private": false,
-  "description": "Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token exchange, and session management.",
-  "author": "Eliware <eliware@eliware.org>",
-  "license": "MIT",
+  "version": "15.0.1",
   "type": "module",
-  "engines": {
-    "node": ">=26 <27"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/eliware/elid-client.git"
-  },
-  "bugs": {
-    "url": "https://github.com/eliware/elid-client/issues"
-  },
-  "homepage": "https://github.com/eliware/elid-client#readme",
+  "description": "Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token retrieval, and session management.",
   "keywords": [
     "eliware",
     "oauth2",
@@ -30,23 +16,22 @@
     "nodejs",
     "esm"
   ],
-  "main": "./src/index.mjs",
-  "types": "./index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "import": "./src/index.mjs"
-    }
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
+  "main": "./src/index.mjs",
   "files": [
     "src/",
-    "index.d.ts",
+    "docs/",
     "README.md",
+    "AGENTS.md",
     "LICENSE",
     "RELEASE_NOTES.md",
-    "docs/",
+    "examples/",
     "specs/",
-    "examples/"
+    "package.json"
   ],
   "scripts": {
     "test": "eliware-test",
@@ -57,12 +42,11 @@
     "typecheck": "tsc --project tsconfig.json",
     "pack": "eliware-test --pack"
   },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
+  "engines": {
+    "node": ">=26"
   },
   "devDependencies": {
-    "@eliware/test": "^9.0.0",
+    "@eliware/test": "^15.0.1",
     "typescript": "^7.0.2"
   },
   "jest": {
@@ -76,7 +60,15 @@
     "coverageReporters": [
       "text",
       "json-summary"
-    ]
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
   },
   "prettier": {
     "printWidth": 100,
@@ -93,12 +85,29 @@
     "proseWrap": "preserve",
     "endOfLine": "lf"
   },
+  "author": "Eliware <eliware@eliware.org>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eliware/elid-client.git"
+  },
+  "homepage": "https://github.com/eliware/elid-client#readme",
+  "bugs": {
+    "url": "https://github.com/eliware/elid-client/issues"
+  },
   "eliware": {
-    "id": "E-220",
+    "id": "E-1331",
     "apply": [
       "general",
       "library",
       "npm-published"
     ]
+  },
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.mjs"
+    }
   }
 }

@@ -1,15 +1,17 @@
 # Examples
 
-Purpose: the [basic.mjs](basic.mjs) example is inherited starter code; it does not demonstrate an EliD client workflow.
+The [basic.mjs](basic.mjs) example shows the scaffold greeting output.
 
 ## Prerequisites
 
-Use Node.js 26 in an ESM-capable project. The current example exercises the local starter package.
+Use Node.js 26 or later in an ESM project.
+The current sample does not implement the EliD OAuth 2.1 client API.
+Run the example from the repository root to use the local source.
 
 ## Command
 
-node examples/basic.mjs
+Run `node examples/basic.mjs` from the repository root.
 
 ## Expected result
 
-The example prints Hello, Eli! and makes no network requests. It does not demonstrate EliD authentication.
+The example prints `Hello, Eli!`.

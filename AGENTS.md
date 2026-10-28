@@ -2,36 +2,51 @@
 
 ## Project
 
-Repository: `eliware/elid-client`. Purpose: maintain `@eliware/elid-client`, the Node.js 26 OAuth 2.1 client library for EliD.
+Repository: `eliware/elid-client`. Purpose: build the Node.js OAuth 2.1 client library for EliD. The current greeting function is scaffold sample code.
 
 ## Scope and boundaries
 
-Repository-wide scope: these instructions apply throughout `eliware/elid-client`; nearer `AGENTS.md` files govern their subdirectories. Important boundaries: this repository owns the client implementation, tests, metadata, and documentation. It excludes ownership of shared requirements, documentation policy, and release procedures. Shared repository requirements are maintained by `eliware/test`, documentation indexes maintained by `eliware/docs`, and release procedures by `eliware/operations`.
+Keep repository-specific requirements in `specs/directives.yaml`. Keep shared requirements in `eliware/test`, documentation indexes in `eliware/docs`, and release procedures in `eliware/operations`.
 
 ## Layout
 
-The required repository structure includes `src/` implementation modules mirrored by `tests/`, public API files `src/index.mjs` and `index.d.ts`, `docs/`, `specs/`, and runnable `examples/`. The package contents are limited by this allowlist: `src/`, `index.d.ts`, `README.md`, `docs/`, `examples/`, `specs/`, `LICENSE`, and `RELEASE_NOTES.md`.
+Keep implementation modules under `src/` and mirror them under `tests/`. Keep public declarations in `src/index.d.ts`, documentation in `docs/`, requirements in `specs/`, and runnable examples in `examples/`.
 
 ## Development
 
-Read this file, `README.md`, and applicable documentation and specifications before changing files. Repository-wide development instructions apply to all source and test subdirectories; nearer `AGENTS.md` files apply only in their subdirectories. Every source and test module must have a single responsibility: one cohesive purpose and one reason to change. Business-logic modules and coordinators are both valid, including coordinators of coordinators, when each module does only its own responsibility. When a change introduces a distinct responsibility, create a focused submodule with a mirrored test and wire it through its owner; do not add the new responsibility to an existing module. During ordinary review, do not ignore mixed responsibilities you notice; refactor them as part of the change. The enforced maxima of 100 source lines and 200 test lines are separate blocking limits: passing them does not prove cohesion or permit mixed responsibilities below those limits. Keep `src/` and `tests/` exactly mirrored. This guidance is actionable, current, and concise; project-specific guidance supplements shared requirements without weakening them.
+Give each source and test module one cohesive purpose. Create a focused module and mirrored test when a change adds a distinct responsibility.
 
 ## Validation
 
-Use Node.js 26, native ESM `.mjs` modules, and npm. The library has no runtime environment settings or configuration files; runtime behavior is controlled by API options. Run `npm ci` after dependency changes and `npm test` for aggregate validation and coverage. Use `npm run lint`, `npm run audit`, `npm run format:check`, `npm run typecheck`, and `npm run pack` for focused validation. `npm run format` writes files; use `npm run format:check` for read-only formatting validation.
+Use Node.js 26 or later, native ESM, and npm.
+
+- Run `npm ci` after dependency changes.
+- Run `npm test` for aggregate validation.
+- Run `npm run lint` for lint checks.
+- Run `npm run audit` for dependency checks.
+- Run `npm run format:check` to check formatting.
+- Run `npm run typecheck` to check the TypeScript declaration.
+- Run `npm run pack` to check package contents.
+- Run `npm run format` only when you intend to write formatting changes.
 
 ## Security
 
-Protect credentials, tokens, and private data. Never commit secret values or machine-specific runtime state. Keep real credentials out of source, tests, examples, and documentation; use only safe placeholders in `.env.example`.
+Keep credentials, tokens, and private data out of Git. Keep machine-specific runtime state out of source, tests, examples, and documentation.
 
 ## Changes
 
-Preserve the documented public contract and update its specifications, tests, declarations, documentation, examples, and release notes when applicable. Record only approved deviations. Publication requires explicit authorization through the applicable Operations release handoff; this file does not authorize publishing.
+Update specifications, tests, declarations, documentation, examples, and release notes when a change affects them. Update the nearest index when you add a document.
 
 ## Library
 
-The public runtime entrypoint is `@eliware/elid-client`, implemented by `src/index.mjs`; public declarations are in `index.d.ts`. The current implementation is inherited greeting sample code; define and implement the EliD client API before release consideration. Keep exports and declarations synchronized and test the public API. Compatibility guidance is provided in the README and release notes. Packaging limits package contents to the documented allowlist. Validate types with `npm run typecheck`, behavior and coverage with `npm test`, and consumer package contents with `eliware-test --pack` or `npm run pack` before release consideration.
+The EliD OAuth 2.1 client API has not been implemented. Replace the greeting sample with the client API and keep exports synchronized with declarations.
+
+Run focused tests first during development.
+Run one test file with `npm test -- tests/path/to/example.test.mjs`.
+Run multiple test files with `npm test -- tests/path/to/first.test.mjs tests/path/to/second.test.mjs`.
+Prevent repeated full-suite runs during development.
+Run the full `npm test` suite for final validation before a commit, milestone, or release.
 
 ## npm publication
 
-The package identity is `@eliware/elid-client`; `package.json.version` is the version source and `RELEASE_NOTES.md` records user-visible changes. The exact package contents allowlist is `src/`, `index.d.ts`, `README.md`, `docs/`, `examples/`, `specs/`, `LICENSE`, and `RELEASE_NOTES.md`. The pack validation command is `eliware-test --pack` (also available as `npm run pack`); it must pass and verify the packed files against that allowlist. Publication uses npm provenance and an exact `vMAJOR.MINOR.PATCH` tag matching `package.json`, after Ubuntu validation. After authorized publication, verify that the exact version is available in the public registry. Publication requires explicit authorization through the Operations release handoff; these instructions do not authorize publishing.
+Use `package.json` as the package version source and `RELEASE_NOTES.md` for user-visible changes. Run `npm run pack` before release consideration. Publish only through the approved Operations release handoff.

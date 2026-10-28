@@ -9,10 +9,10 @@ build/
 .cache/
 *.log
 *.tgz
-.env
-.env.*
-!.env.example
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+generated/
+.env*
+!.env*.example

@@ -28,3 +28,11 @@ test("keeps an omitted resource undefined", () => {
     }),
   ).toMatchObject({ resource: undefined });
 });
+
+test("does not create a nonce for OAuth-only transactions", () => {
+  const transaction = createAuthorizationTransaction({
+    redirectUri: "https://app.example/callback",
+    scopes: ["funnel:read"],
+  });
+  expect(transaction.nonce).toBeUndefined();
+});

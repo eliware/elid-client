@@ -40,6 +40,15 @@ export function createEliDClient(options = {}) {
 
   async function completeTokenResponse(response, nonce, metadata, requireIdToken) {
     const tokens = normalizeTokenResponse(response);
+    if (!config.scopes.includes("openid")) {
+      return {
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        tokenType: tokens.tokenType,
+        expiresIn: tokens.expiresIn,
+        scope: tokens.scope,
+      };
+    }
     if (!tokens.idToken && requireIdToken) {
       throw new ElidClientError(
         "invalid_token_response",
@@ -73,7 +82,7 @@ export function createEliDClient(options = {}) {
 
   async function refreshTokens(input = {}) {
     const { refreshToken, nonce } = input;
-    if (typeof nonce !== "string" || nonce.length === 0) {
+    if (config.scopes.includes("openid") && (typeof nonce !== "string" || nonce.length === 0)) {
       throw new ElidClientError(
         "invalid_argument",
         "nonce must match the original authorization transaction.",
@@ -87,6 +96,12 @@ export function createEliDClient(options = {}) {
   }
 
   async function getUserInfo(accessToken, expectedSubject) {
+    if (!config.scopes.includes("openid")) {
+      throw new ElidClientError(
+        "unsupported_provider",
+        "UserInfo requires a client configured with the openid scope.",
+      );
+    }
     const metadata = await loadMetadata();
     const claims = await requestUserInfo(
       config.fetch,

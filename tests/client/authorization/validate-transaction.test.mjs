@@ -24,6 +24,17 @@ test("validates state, code, and saved transaction", () => {
   });
 });
 
+test("validates OAuth-only transactions without a nonce", () => {
+  const oauthConfig = { ...config, scopes: ["funnel:read"] };
+  const oauthTransaction = { ...transaction, nonce: undefined, scopes: oauthConfig.scopes };
+  expect(
+    validateTransaction(
+      { code: "code-value", state: oauthTransaction.state, transaction: oauthTransaction },
+      oauthConfig,
+    ),
+  ).toEqual({ code: "code-value", transaction: oauthTransaction });
+});
+
 test.each([
   [{ code: "code", state: "wrong", transaction }, "state_mismatch"],
   [{ code: "code", state: "", transaction }, "state_mismatch"],

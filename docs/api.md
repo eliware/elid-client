@@ -23,7 +23,7 @@ const client = createEliDClient({
 | `clientId`              | Yes      | The client ID registered for this application.                                             |
 | `clientSecret`          | No       | The secret for a confidential client.                                                      |
 | `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                       |
-| `scopes`                | Yes      | Unique scope values that include `openid`.                                                 |
+| `scopes`                | Yes      | Unique OAuth scope values. Include `openid` for user sign-in.                              |
 | `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.               |
 | `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                                |
 | `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.                 |
@@ -54,7 +54,7 @@ await sessionStore.save(sessionId, transaction);
 return redirect(authorizationUrl);
 ```
 
-The method creates random `state`, `nonce`, and PKCE verifier values. It returns the verifier in `transaction` so the application can store it server-side. Do not send the transaction to browser JavaScript or browser storage.
+The method creates random `state` and PKCE verifier values. When scopes include `openid`, it also creates a nonce. It returns the verifier in `transaction` so the application can store it server-side. Do not send the transaction to browser JavaScript or browser storage.
 
 Store each transaction once in the application session store. Consume and delete it when the callback arrives. This library does not provide session storage or callback routes.
 
@@ -69,9 +69,11 @@ const tokens = await client.exchangeAuthorizationCode({
 });
 ```
 
-The client checks the returned state and the saved transaction before it sends the code. It sends the same redirect URI, PKCE verifier, and resource value. It verifies the ID Token signature and its issuer, audience, `azp` claim, expiration, issue time, and nonce. It rejects ID Tokens older than `maxIdTokenAgeSeconds`.
+The client checks the returned state and the saved transaction before it sends the code. It sends the same redirect URI, PKCE verifier, and resource value. When scopes include `openid`, it requires and verifies an ID Token. It checks the signature, issuer, audience, `azp` claim, expiration, issue time, and nonce. It rejects ID Tokens older than `maxIdTokenAgeSeconds`.
 
-The result includes the bearer access token, optional refresh token, ID Token claims, and stable identity pair:
+When scopes omit `openid`, the request omits the OIDC nonce. The client accepts a token response without an ID Token and returns no ID Token or identity fields. Use OAuth-only scopes for API access without user sign-in.
+
+An OpenID Connect result includes the bearer access token, optional refresh token, ID Token claims, and stable identity pair:
 
 ```js
 tokens.identity; // { issuer, subject }
@@ -85,7 +87,7 @@ Do not decode access tokens to identify users or infer audiences. Use the ID Tok
 const claims = await client.getUserInfo(tokens.accessToken, tokens.identity.subject);
 ```
 
-The method sends the access token to the discovered UserInfo endpoint. It checks that the returned `sub` matches the verified ID Token subject.
+The method sends the access token to the discovered UserInfo endpoint. It checks that the returned `sub` matches the verified ID Token subject. UserInfo requires the `openid` scope.
 
 ## Refresh and revoke tokens
 
@@ -98,7 +100,7 @@ const nextTokens = await client.refreshTokens({
 await client.revokeToken(nextTokens.refreshToken, "refresh_token");
 ```
 
-The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement. The method verifies a returned ID Token against the initial nonce.
+The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement. For OpenID Connect clients, pass the initial nonce. The method verifies any returned ID Token against that nonce. OAuth-only clients can refresh without a nonce.
 
 The response may omit an ID Token. Keep the prior verified identity in the application session when it does. Save token updates atomically. EliD may replace refresh tokens and reject replay.
 

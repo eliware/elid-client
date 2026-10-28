@@ -14,12 +14,15 @@ directives:
       - Give each application a distinct client and an exact registered redirect URI.
       - Keep domain routing and login branding in EliD configuration.
       - Follow RFC 9700 and RFC 10017 for OAuth and browser application guidance.
-      - Use OpenID Connect when an application needs to sign in a user.
+      - Use OpenID Connect when an application signs in a user.
+      - >-
+        Allow OAuth-only scope sets without `openid` for API access without user sign-in.
       - Follow the OAuth 2.1 Internet-Draft while it remains a draft.
       - Use Authorization Code with PKCE S256 for interactive sign-in.
+      - Create one-time state, nonce, and PKCE verifier values for OpenID Connect transactions.
+      - Create one-time state and a PKCE verifier for OAuth-only transactions.
       - >-
-        Create and validate one-time state, nonce, and PKCE verifier values for each
-        transaction.
+        Include the OIDC nonce parameter only when configured scopes include `openid`.
       - >-
         Store transaction values in one-time application state and require exact redirect URI
         matches.
@@ -29,7 +32,9 @@ directives:
       - Verify ID Token signatures with issuer JWKS and supported algorithms.
       - >-
         Validate ID Token issuer, audience, `azp` when required, expiration, issue time, and
-        nonce.
+        nonce when configured scopes include `openid`.
+      - >-
+        Accept OAuth token responses without an ID Token when configured scopes omit `openid`.
       - Use the `(issuer, subject)` pair as the stable account identity.
       - Keep optional profile claims as provider data, not guaranteed fields.
       - Do not inspect or decode access token contents to identify users or infer audiences.

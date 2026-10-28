@@ -31,13 +31,15 @@ const client = createEliDClient({
 
 For a public client, omit `clientSecret`. Use an HTTPS issuer and redirect URI in deployed applications. The client permits an HTTP issuer on loopback for local development.
 
+Include `openid` in the scopes for user sign-in. Omit `openid` for API access without user sign-in. OAuth-only transactions do not contain a nonce, and their token results do not contain ID Token or identity fields.
+
 ## Start a server-side sign-in
 
 Call `createAuthorizationRequest()` before redirecting the user. Store the returned transaction in the application session store on the server. Do not store it in browser JavaScript or browser storage.
 
 When the callback arrives, atomically consume the saved transaction. Pass its state and the returned code to `exchangeAuthorizationCode()`. Keep session creation, cookie policy, CSRF protection, and application routes in the consuming application.
 
-Call `getUserInfo()` with the bearer access token and the subject from the verified ID Token. Call `refreshTokens()` with the refresh token and initial nonce. Save replacement tokens atomically. Call `revokeToken()` when the application ends its session or no longer needs a token.
+For OpenID Connect, call `getUserInfo()` with the bearer access token and the subject from the verified ID Token. Pass the initial nonce to `refreshTokens()` when the client uses the `openid` scope. OAuth-only clients can refresh without a nonce. Save replacement tokens atomically. Call `revokeToken()` when the application ends its session or stops using a token.
 
 ## Run the discovery example
 

@@ -7,12 +7,11 @@ export function validateScopes(scopes) {
     scopes.some(
       (scope) => typeof scope !== "string" || !/^[\x21\x23-\x5B\x5D-\x7E]+$/.test(scope),
     ) ||
-    new Set(scopes).size !== scopes.length ||
-    !scopes.includes("openid")
+    new Set(scopes).size !== scopes.length
   ) {
     throw new ElidClientError(
       "invalid_configuration",
-      "scopes must contain unique OAuth scope values and include openid.",
+      "scopes must contain unique valid OAuth scope values.",
     );
   }
   return [...scopes];

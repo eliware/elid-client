@@ -26,7 +26,7 @@ export function createAuthorizationRequest(config, metadata) {
   url.searchParams.set("response_type", "code");
   url.searchParams.set("scope", config.scopes.join(" "));
   url.searchParams.set("state", transaction.state);
-  url.searchParams.set("nonce", transaction.nonce);
+  if (transaction.nonce) url.searchParams.set("nonce", transaction.nonce);
   url.searchParams.set("code_challenge", codeChallenge);
   url.searchParams.set("code_challenge_method", "S256");
   if (config.resource) url.searchParams.set("resource", config.resource);

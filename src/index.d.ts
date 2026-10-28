@@ -2,7 +2,7 @@ import type { LoggerWithConfiguredLevels } from "@eliware/log";
 
 export type AuthorizationTransaction = {
   state: string;
-  nonce: string;
+  nonce?: string;
   codeVerifier: string;
   redirectUri: string;
   scopes: string[];
@@ -49,7 +49,7 @@ export type EliDClient = {
     error?: unknown;
   }): Promise<TokenSet>;
   getUserInfo(accessToken: string, expectedSubject: string): Promise<Record<string, unknown>>;
-  refreshTokens(input: { refreshToken: string; nonce: string }): Promise<TokenSet>;
+  refreshTokens(input: { refreshToken: string; nonce?: string }): Promise<TokenSet>;
   revokeToken(token: string, tokenTypeHint?: "access_token" | "refresh_token"): Promise<void>;
 };
 

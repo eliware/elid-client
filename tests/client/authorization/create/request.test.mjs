@@ -42,6 +42,17 @@ test("omits resource when no resource is configured", () => {
   expect(request.transaction.resource).toBeUndefined();
 });
 
+test("omits the OIDC nonce for OAuth-only authorization requests", () => {
+  const request = createAuthorizationRequest(
+    { ...config, scopes: ["funnel:read"], resource: undefined },
+    { authorization_endpoint: "https://issuer.example/authorize" },
+  );
+  const url = new URL(request.authorizationUrl);
+  expect(url.searchParams.has("nonce")).toBe(false);
+  expect(request.transaction.nonce).toBeUndefined();
+  expect(url.searchParams.get("scope")).toBe("funnel:read");
+});
+
 test("rejects unsupported scopes and resources before authorization", () => {
   expect(() =>
     createAuthorizationRequest(config, {

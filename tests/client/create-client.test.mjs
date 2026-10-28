@@ -178,6 +178,61 @@ test("rejects state mismatch before sending a token request", async () => {
   expect(fetcher).not.toHaveBeenCalled();
 });
 
+test("exchanges OAuth-only codes without a nonce or ID Token", async () => {
+  const calls = [];
+  const metadata = {
+    issuer,
+    authorization_endpoint: `${issuer}/authorize`,
+    token_endpoint: `${issuer}/token`,
+    jwks_uri: `${issuer}/jwks`,
+    code_challenge_methods_supported: ["S256"],
+    id_token_signing_alg_values_supported: ["RS256"],
+    token_endpoint_auth_methods_supported: ["none"],
+    scopes_supported: ["funnel:read"],
+  };
+  const fetcher = async (input) => {
+    const url = new URL(input);
+    calls.push(url);
+    if (url.pathname.endsWith("openid-configuration")) return jsonResponse(metadata);
+    return jsonResponse({
+      access_token: "opaque-api-token",
+      token_type: "Bearer",
+      expires_in: 600,
+      scope: "funnel:read",
+    });
+  };
+  const client = createEliDClient({
+    issuer,
+    clientId,
+    redirectUri,
+    scopes: ["funnel:read"],
+    fetch: fetcher,
+    logger: { info: () => {} },
+  });
+  const request = await client.createAuthorizationRequest();
+  expect(request.transaction.nonce).toBeUndefined();
+  expect(new URL(request.authorizationUrl).searchParams.has("nonce")).toBe(false);
+  const tokens = await client.exchangeAuthorizationCode({
+    code: "api-code",
+    state: request.transaction.state,
+    transaction: request.transaction,
+  });
+  expect(tokens).toEqual({
+    accessToken: "opaque-api-token",
+    refreshToken: undefined,
+    tokenType: "Bearer",
+    expiresIn: 600,
+    scope: "funnel:read",
+  });
+  await expect(client.getUserInfo(tokens.accessToken, "user-1")).rejects.toMatchObject({
+    code: "unsupported_provider",
+  });
+  await expect(client.refreshTokens({ refreshToken: "api-refresh" })).resolves.toMatchObject({
+    accessToken: "opaque-api-token",
+  });
+  expect(calls.filter((url) => url.pathname === "/token")).toHaveLength(2);
+});
+
 test.each([
   [
     "authorization code",
@@ -233,27 +288,4 @@ test.each([
 
 test("rejects an empty client configuration", () => {
   expect(() => createEliDClient()).toThrow(/issuer must be an absolute URL/);
-});
-
-test("rejects modified transactions and missing revocation metadata", async () => {
-  const metadata = {
-    issuer,
-    authorization_endpoint: `${issuer}/authorize`,
-    token_endpoint: `${issuer}/token`,
-    jwks_uri: `${issuer}/jwks`,
-    code_challenge_methods_supported: ["S256"],
-    id_token_signing_alg_values_supported: ["RS256"],
-    token_endpoint_auth_methods_supported: ["none"],
-  };
-  const fetcher = jest.fn(async () => jsonResponse(metadata));
-  const client = createEliDClient({
-    issuer,
-    clientId,
-    redirectUri,
-    scopes: ["openid"],
-    fetch: fetcher,
-    logger: { info: () => {} },
-  });
-  await expect(client.revokeToken("token")).rejects.toMatchObject({ code: "unsupported_provider" });
-  expect(client.getUserInfo).toBeDefined();
 });

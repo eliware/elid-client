@@ -107,6 +107,8 @@ if (nextTokens.refreshToken) {
 
 The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement.
 
+If issuer metadata lists `grant_types_supported`, the list must include `refresh_token` for refresh calls. The client rejects refresh when metadata lists only other grants. When issuer metadata omits this optional field, the client attempts the refresh request.
+
 For OpenID Connect clients, pass the initial authentication nonce. A refreshed ID Token can omit `nonce`. If it contains `nonce`, the client requires a match with the initial value. The client verifies its signature and claims.
 
 Pass the prior verified `identity` when refreshing. If EliD omits an ID Token, the result carries that identity forward. If EliD returns an ID Token, the client returns the newly verified identity. The supplied identity issuer must match the configured issuer.

@@ -13,6 +13,7 @@ const validation = (publicKey, overrides = {}) => ({
   algorithms: ["RS256"],
   now: () => now,
   clockToleranceSeconds: 0,
+  maxIdTokenAgeSeconds: 86400,
   keyResolver: publicKey,
   ...overrides,
 });
@@ -135,6 +136,10 @@ test("validates authorized party and multi-audience tokens", async () => {
   });
   const missingParty = await make([clientId, "other-client"]);
   await expect(verifyIdToken(missingParty, validation(keys.publicKey))).rejects.toMatchObject({
+    code: "invalid_id_token",
+  });
+  const invalidParty = await make([clientId, "other-client"], { azp: 7 });
+  await expect(verifyIdToken(invalidParty, validation(keys.publicKey))).rejects.toMatchObject({
     code: "invalid_id_token",
   });
   const validParty = await make([clientId, "other-client"], { azp: clientId });

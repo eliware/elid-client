@@ -1,5 +1,5 @@
 import log from "@eliware/log";
-import { createAuthorizationRequest } from "./authorization/create-request.mjs";
+import { createAuthorizationRequest } from "./authorization/create/request.mjs";
 import { validateTransaction } from "./authorization/validate-transaction.mjs";
 import { ElidClientError } from "./errors/client-error.mjs";
 import { createMetadataLoader } from "./discovery/create/loader.mjs";
@@ -33,18 +33,20 @@ export function createEliDClient(options = {}) {
       algorithms: metadata.id_token_signing_alg_values_supported,
       now: config.now,
       clockToleranceSeconds: config.clockToleranceSeconds,
+      maxIdTokenAgeSeconds: config.maxIdTokenAgeSeconds,
       keyResolver,
     });
   }
 
-  async function completeTokenResponse(response, nonce, metadata) {
+  async function completeTokenResponse(response, nonce, metadata, requireIdToken) {
     const tokens = normalizeTokenResponse(response);
-    if (!tokens.idToken) {
+    if (!tokens.idToken && requireIdToken) {
       throw new ElidClientError(
         "invalid_token_response",
         "The issuer returned no ID Token for the openid scope.",
       );
     }
+    if (!tokens.idToken) return tokens;
     const idTokenClaims = await verifiedClaims(tokens.idToken, nonce, metadata);
     return {
       ...tokens,
@@ -64,7 +66,7 @@ export function createEliDClient(options = {}) {
     };
     if (transaction.resource) parameters.resource = transaction.resource;
     const response = await requestToken(config.fetch, config, metadata, parameters);
-    const tokens = await completeTokenResponse(response, transaction.nonce, metadata);
+    const tokens = await completeTokenResponse(response, transaction.nonce, metadata, true);
     config.logger.info("Authorization code exchanged", { operation: "exchangeAuthorizationCode" });
     return tokens;
   }
@@ -79,7 +81,7 @@ export function createEliDClient(options = {}) {
     }
     const metadata = await loadMetadata();
     const response = await requestRefreshToken(config.fetch, config, metadata, refreshToken);
-    const tokens = await completeTokenResponse(response, nonce, metadata);
+    const tokens = await completeTokenResponse(response, nonce, metadata, false);
     config.logger.info("Tokens refreshed", { operation: "refreshTokens" });
     return tokens;
   }

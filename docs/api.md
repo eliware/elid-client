@@ -17,20 +17,21 @@ const client = createEliDClient({
 });
 ```
 
-| Option                  | Required | Description                                                                  |
-| ----------------------- | -------- | ---------------------------------------------------------------------------- |
-| `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                    |
-| `clientId`              | Yes      | The client ID registered for this application.                               |
-| `clientSecret`          | No       | The secret for a confidential client.                                        |
-| `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.         |
-| `scopes`                | Yes      | Unique scope values that include `openid`.                                   |
-| `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support. |
-| `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                  |
-| `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.   |
-| `clockToleranceSeconds` | No       | The allowed ID Token clock difference. The default is `5`.                   |
-| `fetch`                 | No       | A replacement Fetch function for tests or controlled transports.             |
-| `now`                   | No       | A clock function that returns milliseconds since the Unix epoch.             |
-| `logger`                | No       | A logger with an `info` method. The default is `@eliware/log`.               |
+| Option                  | Required | Description                                                                                |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                                  |
+| `clientId`              | Yes      | The client ID registered for this application.                                             |
+| `clientSecret`          | No       | The secret for a confidential client.                                                      |
+| `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                       |
+| `scopes`                | Yes      | Unique scope values that include `openid`.                                                 |
+| `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.               |
+| `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                                |
+| `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.                 |
+| `clockToleranceSeconds` | No       | The allowed ID Token clock difference. The default is `5`.                                 |
+| `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                            |
+| `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`. |
+| `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.         |
+| `logger`                | No       | A logger with an `info` method. The default is `@eliware/log`.                             |
 
 The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local development. The callback URI must use HTTPS.
 
@@ -68,7 +69,7 @@ const tokens = await client.exchangeAuthorizationCode({
 });
 ```
 
-The client checks the returned state and the saved transaction before it sends the code. It sends the same redirect URI, PKCE verifier, and resource value. It verifies the ID Token signature and its issuer, audience, `azp` claim, expiration, issue time, and nonce.
+The client checks the returned state and the saved transaction before it sends the code. It sends the same redirect URI, PKCE verifier, and resource value. It verifies the ID Token signature and its issuer, audience, `azp` claim, expiration, issue time, and nonce. It rejects ID Tokens older than `maxIdTokenAgeSeconds`.
 
 The result includes the bearer access token, optional refresh token, ID Token claims, and stable identity pair:
 
@@ -97,7 +98,9 @@ const nextTokens = await client.refreshTokens({
 await client.revokeToken(nextTokens.refreshToken, "refresh_token");
 ```
 
-The refresh method repeats the configured resource value and verifies any returned ID Token against the initial nonce. Save the new access and refresh tokens atomically. EliD replaces refresh tokens and rejects replay.
+The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement. The method verifies a returned ID Token against the initial nonce.
+
+The response may omit an ID Token. Keep the prior verified identity in the application session when it does. Save token updates atomically. EliD may replace refresh tokens and reject replay.
 
 The revoke method uses the discovered `revocation_endpoint`. The optional hint accepts `access_token` or `refresh_token`. The client does not provide token introspection because resource servers own that operation.
 

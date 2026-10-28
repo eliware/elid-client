@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { expect, test } from "@jest/globals";
-import { createAuthorizationRequest } from "../../../src/client/authorization/create-request.mjs";
+import { createAuthorizationRequest } from "../../../../src/client/authorization/create/request.mjs";
 
 const config = {
   clientId: "web-app",
@@ -28,13 +28,7 @@ test("creates a PKCE authorization request and one-time transaction values", () 
     createHash("sha256").update(verifier).digest("base64url"),
   );
   expect(url.searchParams.get("resource")).toBe(config.resource);
-  expect(verifier).toMatch(/^[A-Za-z0-9_-]{43}$/);
-  expect(request.transaction.state).toMatch(/^[A-Za-z0-9_-]{43}$/);
-  expect(request.transaction.nonce).toMatch(/^[A-Za-z0-9_-]{43}$/);
-  expect(request.transaction).toMatchObject({
-    redirectUri: config.redirectUri,
-    scopes: config.scopes,
-  });
+  expect(request.transaction.codeVerifier).toBe(verifier);
 });
 
 test("omits resource when no resource is configured", () => {

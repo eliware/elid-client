@@ -7,7 +7,7 @@ test("resolves and caches public JWKS keys with injected safe fetch", async () =
   const keys = await createOidcKeys();
   const issuedAt = 1_893_456_000;
   const fetcher = jest.fn(async (_url, options) => {
-    expect(options.redirect).toBe("manual");
+    expect(options.redirect).toBe("error");
     return new Response(JSON.stringify(keys.jwks), {
       status: 200,
       headers: { "content-type": "application/json" },

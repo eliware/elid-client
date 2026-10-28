@@ -22,6 +22,9 @@ test("rejects malformed URLs and embedded credentials", () => {
   expect(() => validateUrl("https://user:pass@issuer.example", "issuer")).toThrow(
     "issuer contains unsupported URL parts",
   );
+  expect(() => validateUrl("https://@issuer.example", "issuer")).toThrow(
+    "issuer contains unsupported URL parts",
+  );
 });
 
 test("controls query strings and fragments", () => {

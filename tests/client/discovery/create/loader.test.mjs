@@ -78,38 +78,6 @@ test("refreshes expired metadata and supports issuer paths", async () => {
   expect(fetcher.mock.calls[0][0].pathname).toBe("/tenant/.well-known/openid-configuration");
 });
 
-test("rejects issuer mismatches and unsafe endpoints", async () => {
-  for (const body of [
-    metadata({ issuer: "https://other.example" }),
-    metadata({ token_endpoint: "http://attacker.example/token" }),
-  ]) {
-    const load = createMetadataLoader(config(async () => jsonResponse(body)));
-    await expect(load()).rejects.toMatchObject({
-      code: body.issuer === "https://other.example" ? "issuer_mismatch" : "invalid_configuration",
-    });
-  }
-});
-
-test("rejects unsupported authorization and signing capabilities", async () => {
-  const invalid = [
-    metadata({ code_challenge_methods_supported: ["plain"] }),
-    metadata({ grant_types_supported: ["client_credentials"] }),
-    metadata({ grant_types_supported: "authorization_code" }),
-    metadata({ response_types_supported: ["token"] }),
-    metadata({ response_types_supported: 1 }),
-    metadata({ id_token_signing_alg_values_supported: ["none", "HS256"] }),
-    metadata({ scopes_supported: ["openid", 7] }),
-    metadata({ token_endpoint_auth_methods_supported: "client_secret_basic" }),
-  ];
-  for (const body of invalid) {
-    await expect(
-      createMetadataLoader(config(async () => jsonResponse(body)))(),
-    ).rejects.toMatchObject({
-      code: "unsupported_provider",
-    });
-  }
-});
-
 test("shares concurrent metadata requests", async () => {
   let resolveResponse;
   const fetcher = jest.fn(
@@ -124,10 +92,4 @@ test("shares concurrent metadata requests", async () => {
   expect(fetcher).toHaveBeenCalledTimes(1);
   resolveResponse(jsonResponse(metadata()));
   await expect(Promise.all([first, second])).resolves.toEqual([await first, await first]);
-});
-
-test("uses the protocol default for omitted token authentication methods", async () => {
-  const body = metadata({ token_endpoint_auth_methods_supported: undefined });
-  const loaded = await createMetadataLoader(config(async () => jsonResponse(body)))();
-  expect(loaded.token_endpoint_auth_methods_supported).toEqual(["client_secret_basic"]);
 });

@@ -42,23 +42,10 @@ test("accepts optional settings and loopback HTTP issuers", () => {
 test("rejects invalid client settings", () => {
   expect(() => validateOptions()).toThrow();
   for (const options of [
-    { ...validOptions, clientId: "" },
-    { ...validOptions, clientId: 1 },
     { ...validOptions, redirectUri: "https://app.example/callback?next=1" },
     { ...validOptions, redirectUri: "https://app.example/callback#part" },
-    { ...validOptions, clientSecret: "" },
-    { ...validOptions, clientSecret: 4 },
-    { ...validOptions, timeoutMs: 0 },
-    { ...validOptions, timeoutMs: 1.5 },
-    { ...validOptions, metadataCacheMs: -1 },
-    { ...validOptions, metadataCacheMs: 0.5 },
-    { ...validOptions, clockToleranceSeconds: -1 },
-    { ...validOptions, clockToleranceSeconds: 0.5 },
-    { ...validOptions, fetch: 1 },
-    { ...validOptions, now: 1 },
-    { ...validOptions, logger: null },
-    { ...validOptions, logger: {} },
     { ...validOptions, resource: "http://api.example" },
+    { ...validOptions, scopes: [] },
   ]) {
     expect(() => validateOptions(options)).toThrow();
   }

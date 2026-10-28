@@ -43,6 +43,8 @@ Call `getUserInfo()` with the bearer access token and the subject from the verif
 
 Set `ELID_ISSUER_URL`, `ELID_CLIENT_ID`, `ELID_REDIRECT_URI`, and `ELID_SCOPES` in the process environment. Set `NODE_EXTRA_CA_CERTS` when the local issuer uses a private test CA.
 
+Optionally set `ELID_CLIENT_SECRET` for a confidential client. Set `ELID_RESOURCE` when the issuer requires an audience-bound token.
+
 Run this command from the repository root:
 
 ```sh

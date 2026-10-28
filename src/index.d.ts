@@ -19,6 +19,7 @@ export type EliDClientOptions = {
   timeoutMs?: number;
   metadataCacheMs?: number;
   clockToleranceSeconds?: number;
+  maxIdTokenAgeSeconds?: number;
   fetch?: typeof globalThis.fetch;
   now?: () => number;
   logger?: LoggerWithConfiguredLevels;
@@ -30,9 +31,9 @@ export type TokenSet = {
   tokenType: "Bearer";
   expiresIn?: number;
   scope?: string;
-  idToken: string;
-  idTokenClaims: Record<string, unknown>;
-  identity: { issuer: string; subject: string };
+  idToken?: string;
+  idTokenClaims?: Record<string, unknown>;
+  identity?: { issuer: string; subject: string };
 };
 
 export type EliDClient = {
@@ -45,7 +46,7 @@ export type EliDClient = {
     code?: string;
     state: string;
     transaction: AuthorizationTransaction;
-    error?: string;
+    error?: unknown;
   }): Promise<TokenSet>;
   getUserInfo(accessToken: string, expectedSubject: string): Promise<Record<string, unknown>>;
   refreshTokens(input: { refreshToken: string; nonce: string }): Promise<TokenSet>;

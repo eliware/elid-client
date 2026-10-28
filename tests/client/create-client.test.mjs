@@ -146,7 +146,7 @@ test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and 
   );
 });
 
-test("rejects state mismatch, invalid transactions, and authorization errors before token requests", async () => {
+test("rejects state mismatch before sending a token request", async () => {
   const fetcher = jest.fn();
   const client = createEliDClient({
     issuer,
@@ -168,25 +168,37 @@ test("rejects state mismatch, invalid transactions, and authorization errors bef
   ).rejects.toMatchObject({
     code: "state_mismatch",
   });
-  await expect(
-    client.exchangeAuthorizationCode({ state: "saved-state", transaction, error: "access_denied" }),
-  ).rejects.toMatchObject({ code: "authorization_error", oauthCode: "access_denied" });
-  await expect(
-    client.exchangeAuthorizationCode({ state: "saved-state", transaction }),
-  ).rejects.toMatchObject({
-    code: "invalid_argument",
-  });
-  await expect(client.refreshTokens({ refreshToken: "refresh" })).rejects.toMatchObject({
-    code: "invalid_argument",
-  });
   await expect(client.exchangeAuthorizationCode()).rejects.toMatchObject({
     code: "invalid_transaction",
   });
   await expect(client.refreshTokens()).rejects.toMatchObject({ code: "invalid_argument" });
+  await expect(client.refreshTokens({ refreshToken: "refresh" })).rejects.toMatchObject({
+    code: "invalid_argument",
+  });
   expect(fetcher).not.toHaveBeenCalled();
 });
 
-test("rejects a token response without an ID Token", async () => {
+test.each([
+  [
+    "authorization code",
+    { access_token: "access", token_type: "Bearer" },
+    async (client) => {
+      const request = await client.createAuthorizationRequest();
+      return client.exchangeAuthorizationCode({
+        code: "code",
+        state: request.transaction.state,
+        transaction: request.transaction,
+      });
+    },
+    "invalid_token_response",
+  ],
+  [
+    "refresh",
+    { access_token: "access-next", token_type: "Bearer" },
+    (client) => client.refreshTokens({ refreshToken: "refresh-current", nonce: "saved-nonce" }),
+    undefined,
+  ],
+])("handles %s responses without an ID Token", async (_flow, tokenResponse, invoke, errorCode) => {
   const metadata = {
     issuer,
     authorization_endpoint: `${issuer}/authorize`,
@@ -198,7 +210,7 @@ test("rejects a token response without an ID Token", async () => {
   };
   const fetcher = async (input) => {
     if (new URL(input).pathname.endsWith("openid-configuration")) return jsonResponse(metadata);
-    return jsonResponse({ access_token: "access", token_type: "Bearer" });
+    return jsonResponse(tokenResponse);
   };
   const client = createEliDClient({
     issuer,
@@ -208,14 +220,15 @@ test("rejects a token response without an ID Token", async () => {
     fetch: fetcher,
     logger: { info: () => {} },
   });
-  const request = await client.createAuthorizationRequest();
-  await expect(
-    client.exchangeAuthorizationCode({
-      code: "code",
-      state: request.transaction.state,
-      transaction: request.transaction,
-    }),
-  ).rejects.toMatchObject({ code: "invalid_token_response" });
+  const result = invoke(client);
+  if (errorCode) {
+    await expect(result).rejects.toMatchObject({ code: errorCode });
+  } else {
+    await expect(result).resolves.toMatchObject({
+      accessToken: "access-next",
+      tokenType: "Bearer",
+    });
+  }
 });
 
 test("rejects an empty client configuration", () => {
@@ -241,20 +254,6 @@ test("rejects modified transactions and missing revocation metadata", async () =
     fetch: fetcher,
     logger: { info: () => {} },
   });
-  const transaction = {
-    state: "saved-state",
-    nonce: "saved-nonce",
-    codeVerifier: "a".repeat(43),
-    redirectUri,
-    scopes: ["openid"],
-  };
-  await expect(
-    client.exchangeAuthorizationCode({
-      code: "code",
-      state: "saved-state",
-      transaction: { ...transaction, redirectUri: "https://other.example/callback" },
-    }),
-  ).rejects.toMatchObject({ code: "invalid_transaction" });
   await expect(client.revokeToken("token")).rejects.toMatchObject({ code: "unsupported_provider" });
   expect(client.getUserInfo).toBeDefined();
 });

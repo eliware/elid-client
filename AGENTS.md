@@ -2,7 +2,7 @@
 
 ## Project
 
-Repository: `eliware/elid-client`. Purpose: build the Node.js OAuth 2.1 client library for EliD. The current greeting function is scaffold sample code.
+Repository: `eliware/elid-client`. Purpose: provide shared Node.js OAuth and OpenID Connect operations for EliD applications.
 
 ## Scope and boundaries
 

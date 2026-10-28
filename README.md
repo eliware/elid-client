@@ -23,7 +23,7 @@ Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication,
 
 ## Features
 
-Build server-side EliD integrations with shared OAuth and OpenID Connect operations. The library supports issuer discovery, Authorization Code with PKCE, ID Token verification, UserInfo, token refresh, and token revocation.
+Build server-side EliD integrations with shared OAuth and OpenID Connect operations. The library supports issuer discovery, Authorization Code with PKCE, ID Token verification, UserInfo, token refresh, and token revocation. Keep application sessions, cookies, routes, and storage in the consuming application.
 
 ## Requirements
 

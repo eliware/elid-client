@@ -21,7 +21,7 @@ const client = createEliDClient({
 | ----------------------- | -------- | ------------------------------------------------------------------------------------------ |
 | `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                                  |
 | `clientId`              | Yes      | The client ID registered for this application.                                             |
-| `clientSecret`          | No       | The secret for a confidential client.                                                      |
+| `clientSecret`          | No       | The secret for a confidential client. Keep it on the server.                               |
 | `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                       |
 | `scopes`                | Yes      | Unique OAuth scope values. Include `openid` for user sign-in.                              |
 | `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.               |
@@ -31,7 +31,7 @@ const client = createEliDClient({
 | `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                            |
 | `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`. |
 | `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.         |
-| `logger`                | No       | A logger with an `info` method. The default is `@eliware/log`.                             |
+| `logger`                | No       | A logger object with an `info` method. The default is `@eliware/log`.                      |
 
 The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local use. The callback URI must use HTTPS.
 
@@ -45,6 +45,8 @@ console.log(metadata.issuer);
 The client loads OpenID Connect discovery metadata from the configured issuer. It rejects an issuer mismatch, unsafe endpoint URL, or missing PKCE S256 support. It caches validated metadata and uses the advertised endpoints.
 
 The client verifies ID Tokens with issuer JWKS. The JOSE verifier caches signing keys and refreshes them when the issuer changes signing keys.
+
+`discover()` returns the validated metadata object. Its endpoint properties use standard names such as `authorization_endpoint`, `token_endpoint`, `userinfo_endpoint`, `jwks_uri`, and `revocation_endpoint`. The returned object is a copy. Do not modify it to change client behavior.
 
 ## Start authorization
 
@@ -87,17 +89,19 @@ Do not decode access tokens to identify users or infer audiences. Use the ID Tok
 const claims = await client.getUserInfo(tokens.accessToken, tokens.identity.subject);
 ```
 
-The method sends the access token to the discovered UserInfo endpoint. It checks that the returned `sub` matches the verified ID Token subject. UserInfo requires the `openid` scope.
+The method sends the access token to the discovered UserInfo endpoint. It checks that the returned `sub` matches the verified ID Token subject. Configure the client with the `openid` scope, and use UserInfo only when issuer metadata advertises the endpoint.
 
 ## Refresh and revoke tokens
 
 ```js
 const nextTokens = await client.refreshTokens({
   refreshToken: tokens.refreshToken,
-  nonce: tokens.idTokenClaims.nonce,
+  nonce: transaction.nonce,
 });
 
-await client.revokeToken(nextTokens.refreshToken, "refresh_token");
+if (nextTokens.refreshToken) {
+  await client.revokeToken(nextTokens.refreshToken, "refresh_token");
+}
 ```
 
 The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement.
@@ -106,12 +110,28 @@ For OpenID Connect clients, pass the initial authentication nonce. A refreshed I
 
 OAuth-only clients can refresh without a nonce.
 
-The response may omit an ID Token. Keep the prior verified identity in the application session when it does. Save token updates atomically. EliD may replace refresh tokens and reject replay.
+The response may omit an ID Token or refresh token. Keep the prior verified identity when the response omits an ID Token. Keep the submitted refresh token when the response omits a replacement. Save token updates atomically because EliD may replace refresh tokens and reject replay.
 
 The revoke method uses the discovered `revocation_endpoint`. The optional hint accepts `access_token` or `refresh_token`. The client does not provide token introspection because resource servers own that operation.
 
 ## Errors
 
 The client throws `ElidClientError` with a stable `code` and a safe message. It may include an HTTP `status` or an OAuth `oauthCode`. It does not include response descriptions or credentials.
+
+Common error codes include:
+
+| Code                                        | Meaning                                                          |
+| ------------------------------------------- | ---------------------------------------------------------------- |
+| `authorization_error`                       | The user or issuer declined the authorization request.           |
+| `invalid_configuration`                     | A client option is missing or invalid.                           |
+| `invalid_transaction` or `state_mismatch`   | The saved one-time transaction does not match the callback.      |
+| `issuer_mismatch` or `unsupported_provider` | Issuer metadata does not match or omits needed protocol support. |
+| `invalid_id_token` or `nonce_mismatch`      | An ID Token failed signature, claim, time, or nonce validation.  |
+| `invalid_token_response`                    | A token response is missing required data or has invalid values. |
+| `oauth_error`                               | EliD returned an OAuth error. Check `oauthCode` and `status`.    |
+| `request_timeout` or `network_error`        | A request timed out or could not contact EliD.                   |
+| `http_error` or `invalid_response`          | EliD rejected the request or returned an invalid response.       |
+
+Other codes can report invalid method arguments or UserInfo subject mismatches. Process errors by `code`, and use `oauthCode` only for provider-specific details. Do not show raw error messages to end users.
 
 Process errors at the application boundary. Do not log authorization codes, tokens, client secrets, transaction verifiers, or user input.

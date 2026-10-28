@@ -58,8 +58,17 @@ directives:
         Preserve resource indicators, scopes, and audience checks when applications call
         protected resources.
       - >-
-        Examine `docs-web`, `checkd`, `funnel`, `mail-server`, and `sangah-landing` as
-        consumers.
+        Examine `docs-web`, `checkd`, `funnel`, `mail-server`, `mail-web`, and `sangah-landing`
+        as separate consumers.
+      - >-
+        Identify the repository that owns the Mail frontend OAuth flow and record its issuer,
+        callback, token handling, and session responsibilities.
+      - >-
+        Record the missing Mail frontend source location as a migration blocker when the source is
+        unavailable in `mail-web`.
+      - >-
+        Keep the mail-server API separate from the Mail frontend OAuth client unless its source
+        confirms that role.
       - >-
         Include the planned Sangah requests operator panel as a future `sangah-landing`
         integration.

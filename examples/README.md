@@ -1,14 +1,14 @@
 # Examples
 
-The [discover.mjs](discover.mjs) example checks issuer discovery through the public client API.
+The [discovery example](discover.mjs) shows how to load validated issuer metadata.
 
 ## Prerequisites
 
-Use Node.js 26 or later. Set `ELID_ISSUER_URL`, `ELID_CLIENT_ID`, `ELID_REDIRECT_URI`, and `ELID_SCOPES`.
+Install `@eliware/elid-client` in a Node.js 26 or later server application. Set `ELID_ISSUER_URL`, `ELID_CLIENT_ID`, `ELID_REDIRECT_URI`, and `ELID_SCOPES`.
 
 ## Command
 
-Run `node examples/discover.mjs` from the repository root.
+Run `node node_modules/@eliware/elid-client/examples/discover.mjs` from the application directory.
 
 ## Expected result
 

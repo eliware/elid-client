@@ -33,7 +33,7 @@ const client = createEliDClient({
 | `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.         |
 | `logger`                | No       | A logger with an `info` method. The default is `@eliware/log`.                             |
 
-The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local development. The callback URI must use HTTPS.
+The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local use. The callback URI must use HTTPS.
 
 ## Load issuer metadata
 

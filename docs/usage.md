@@ -29,7 +29,7 @@ const client = createEliDClient({
 });
 ```
 
-For a public client, omit `clientSecret`. Use an HTTPS issuer and redirect URI in deployed applications. The client permits an HTTP issuer on loopback for local development.
+For a public client, omit `clientSecret`. Use an HTTPS issuer and redirect URI in deployed applications. The client permits an HTTP issuer on loopback for local use.
 
 Include `openid` in the scopes for user sign-in. Omit `openid` for API access without user sign-in. OAuth-only transactions do not contain a nonce, and their token results do not contain ID Token or identity fields.
 
@@ -49,29 +49,10 @@ Set `ELID_ISSUER_URL`, `ELID_CLIENT_ID`, `ELID_REDIRECT_URI`, and `ELID_SCOPES` 
 
 Optionally set `ELID_CLIENT_SECRET` for a confidential client. Set `ELID_RESOURCE` when the issuer requires an audience-bound token.
 
-Run this command from the repository root:
+Run the example from the application directory:
 
 ```sh
-node examples/discover.mjs
+node node_modules/@eliware/elid-client/examples/discover.mjs
 ```
 
 The example prints validated issuer and endpoint URLs. It does not print client secrets, tokens, or transaction values.
-
-## Validate a checkout
-
-Run these commands from the repository root:
-
-```sh
-npm ci
-npm test
-npm run typecheck
-npm run pack
-```
-
-The test suite uses mocked provider responses. It does not contact a production issuer. Run `node test-fixtures/verify-local-smoke.mjs` with the local smoke environment to test EliD.
-
-## Package contents and releases
-
-The npm package includes `src/`, `docs/`, `examples/`, `specs/`, `README.md`, `AGENTS.md`, `LICENSE`, `RELEASE_NOTES.md`, and `package.json`. It excludes tests, test fixtures, local environment files, and build output.
-
-Use `package.json.version` as the version source. Match each release tag to `vMAJOR.MINOR.PATCH`. Run `npm run pack` before release consideration. Publish only through the approved Operations release handoff with npm provenance.

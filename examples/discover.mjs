@@ -1,4 +1,4 @@
-import { createEliDClient } from "../src/index.mjs";
+import { createEliDClient } from "@eliware/elid-client";
 
 const required = ["ELID_ISSUER_URL", "ELID_CLIENT_ID", "ELID_REDIRECT_URI", "ELID_SCOPES"];
 for (const name of required) {

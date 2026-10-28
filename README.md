@@ -31,7 +31,7 @@ Use Node.js 26 or later.
 
 ## Setup
 
-Install `@eliware/elid-client` in a Node.js server application. Read [setup guidance](docs/usage.md) for configuration and validation steps.
+Install `@eliware/elid-client` in a Node.js server application. Read [setup guidance](docs/usage.md) for configuration instructions.
 
 ## Usage
 
@@ -39,19 +39,19 @@ Create one client instance for each EliD application. Store each authorization t
 
 ## Development
 
-Read [AGENTS.md](AGENTS.md) before you change files. See [the specifications index](specs/README.md) for repository requirements.
+Read [AGENTS.md](AGENTS.md) and the [specifications index](specs/README.md) before you change files.
 
 ## Testing
 
-Run `npm test` before handoff.
+Run `npm test` for repository checks. Run `npm run typecheck` to validate the TypeScript declaration.
 
 ## Troubleshooting
 
-See [usage guidance](docs/usage.md) for installation, import, and publishing problems.
+Read the [usage guide](docs/usage.md) for installation, configuration, and client operation guidance.
 
 ## Security
 
-Keep credentials, secret values, private data, and runtime state out of Git.
+Keep client secrets and server-held tokens on the server. Do not log credentials, authorization codes, tokens, or verifiers.
 
 ## API
 
@@ -59,7 +59,7 @@ See the [API reference](docs/api.md) for client creation, authorization, token h
 
 ## Packaging
 
-See [usage guidance](docs/usage.md) for package contents, versioning, and publication steps.
+Run `npm run pack` to check package contents. Follow approved release steps before publication.
 
 ## Examples
 

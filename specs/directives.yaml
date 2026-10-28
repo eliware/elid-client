@@ -52,40 +52,16 @@ directives:
       - >-
         Keep token introspection outside this client library because it belongs to
         resource-server behavior.
-      - >-
-        Record separate introspection needs for non-MCP resource servers during consumer
-        analysis.
       - Use `@eliware/mcp-server` for its supported MCP protected-resource behavior.
       - Separate application sign-in from authorization to call MCP or HTTP resources.
       - >-
         Preserve resource indicators, scopes, and audience checks when applications call
         protected resources.
       - >-
-        Examine `docs-web`, `checkd`, `funnel`, `mail-server`, and `sangah-landing` as
-        consumers.
-      - Manage Mail frontend OAuth through its own release process.
-      - Exclude the Mail frontend and mail-server API from this library's migration order.
-      - >-
-        Keep the mail-server API separate from the Mail frontend OAuth client unless its source
-        confirms that role.
-      - >-
-        Include the planned Sangah requests operator panel as a future `sangah-landing`
-        integration.
-      - >-
-        Record each in-scope consumer's OAuth role, issuer, redirects, scopes, resources, session
-        model, token use, and migration steps.
-      - >-
-        Identify each in-scope consumer's OpenID Connect client, API resource server, MCP client,
-        and MCP server roles.
-      - >-
-        Compare in-scope consumers before choosing the first migration, then replace its custom
-        protocol handling.
+        Keep `docs/` focused on end-user installation, configuration, API, and usage guidance.
       - >-
         Keep user provisioning, application roles, routes, and authorization policy in each
         owning application.
-      - >-
-        Document migration steps for remaining in-scope consumers and the planned requests
-        operator panel.
       - Add timeouts, response checks, safe retries where allowed, and typed protocol errors.
       - >-
         Redact diagnostics and exclude credentials, authorization codes, tokens, verifiers, and
@@ -107,6 +83,9 @@ directives:
         consideration.
       - Publish only through the approved Operations release handoff.
     donts:
+      - >-
+        Do not include consumer migration inventories or repository development instructions in
+        `docs/`.
       - Do not ship browser OAuth code, browser UI, or application session storage.
       - Do not claim that package metadata provides application session management.
       - Do not expose client secrets or server-held tokens to browser JavaScript.

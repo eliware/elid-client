@@ -23,7 +23,7 @@ Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication,
 
 ## Features
 
-The planned library will provide EliD OAuth 2.1 client features. The current repository contains a sample ESM API, TypeScript declarations, tests, and examples. The client API has not been implemented.
+Build server-side EliD integrations with shared OAuth and OpenID Connect operations. The library supports issuer discovery, Authorization Code with PKCE, ID Token verification, UserInfo, token refresh, and token revocation.
 
 ## Requirements
 
@@ -31,11 +31,11 @@ Use Node.js 26 or later.
 
 ## Setup
 
-This repository contains an initial scaffold for the EliD client library. The greeting API is sample code. See [setup guidance](docs/usage.md) for the current status and validation steps.
+Install `@eliware/elid-client` in a Node.js server application. Read [setup guidance](docs/usage.md) for configuration and validation steps.
 
 ## Usage
 
-The EliD client API has not been implemented. Read the [user guide](docs/README.md) and [release notes](RELEASE_NOTES.md).
+Create one client instance for each EliD application. Store each authorization transaction in the application session store and consume it once during callback handling. Read the [user guide](docs/README.md) and [release notes](RELEASE_NOTES.md).
 
 ## Development
 
@@ -55,7 +55,7 @@ Keep credentials, secret values, private data, and runtime state out of Git.
 
 ## API
 
-See the [API reference](docs/api.md) for the sample `createGreeting` function and its injectable structured logger. This function is not the EliD client API.
+See the [API reference](docs/api.md) for client creation, authorization, token handling, and typed errors.
 
 ## Packaging
 

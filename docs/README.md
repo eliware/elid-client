@@ -1,15 +1,16 @@
 # Library documentation
 
-This directory explains the scaffold API and the planned EliD client library.
+This directory documents the EliD OAuth and OpenID Connect client.
 
 ## Start here
 
-- Read [Usage](usage.md) to install dependencies, run the sample, and validate changes.
-- Read [API reference](api.md) for the sample export, logger option, and behavior.
+- Read [Usage](usage.md) to install the package, configure a client, and run the example.
+- Read [API reference](api.md) for protocol methods, options, results, and errors.
+- Read [consumer inventory](consumer-migration.md) for current OAuth roles and migration steps.
 
 ## Project status
 
-The current sample API only exports `createGreeting`. The EliD OAuth 2.1 client API has not been implemented.
+The library supports Node.js server-side clients and backends for frontend applications. It does not store application sessions or provide browser OAuth code.
 
 ## Validate changes
 

@@ -1,14 +1,111 @@
 version: "15.0"
-description: Local requirements for the EliD OAuth 2.1 client library.
+description: Local requirements for the EliD OAuth and OpenID Connect client library.
 directives:
   - id: E-1331.0
     dos:
-      - >
-        Build the EliD OAuth 2.1 client API with native ESM, types, documentation, tests,
-        and examples.
-      - Keep the package identity and public API aligned with the repository.
-      - Use `@eliware/log` 15.0.1 for structured logs with an injectable logger.
-      - Add operation context to logs without credentials, tokens, or user input.
+      - Build `@eliware/elid-client` as the shared Node.js client for EliD applications.
+      - Support Node.js server-side OAuth clients and backends for frontend applications.
+      - >-
+        Keep the library framework-neutral and provide server-side protocol operations and
+        transaction validation.
+      - >-
+        Configure the issuer, client ID, redirect URI, scopes, and resource for each application
+        at runtime.
+      - Give each application a distinct client and an exact registered redirect URI.
+      - Keep domain routing and login branding in EliD configuration.
+      - Follow RFC 9700 and RFC 10017 for OAuth and browser application guidance.
+      - Use OpenID Connect when an application needs to sign in a user.
+      - Follow the OAuth 2.1 Internet-Draft while it remains a draft.
+      - Use Authorization Code with PKCE S256 for interactive sign-in.
+      - >-
+        Create and validate one-time state, nonce, and PKCE verifier values for each
+        transaction.
+      - >-
+        Store transaction values in one-time application state and require exact redirect URI
+        matches.
+      - Read issuer metadata and verify an exact match with the configured issuer.
+      - Use only endpoints and capabilities from verified issuer metadata.
+      - Cache metadata and signing keys safely, and support rotated JWKS keys.
+      - Verify ID Token signatures with issuer JWKS and supported algorithms.
+      - >-
+        Validate ID Token issuer, audience, `azp` when required, expiration, issue time, and
+        nonce.
+      - Use the `(issuer, subject)` pair as the stable account identity.
+      - Keep optional profile claims as provider data, not guaranteed fields.
+      - Do not inspect or decode access token contents to identify users or infer audiences.
+      - Use UserInfo for identity claims that EliD supports and documents.
+      - Send the RFC 8707 resource value when the target API requires an audience-bound token.
+      - Support rotated refresh tokens and reject replay, expiry, and revocation errors safely.
+      - >-
+        Provide token revocation through the discovered endpoint and advertised client
+        authentication methods.
+      - >-
+        Keep token introspection outside this client library because it belongs to
+        resource-server behavior.
+      - >-
+        Record separate introspection needs for non-MCP resource servers during consumer
+        analysis.
+      - Use `@eliware/mcp-server` for its supported MCP protected-resource behavior.
+      - Separate application sign-in from authorization to call MCP or HTTP resources.
+      - >-
+        Preserve resource indicators, scopes, and audience checks when applications call
+        protected resources.
+      - >-
+        Examine `docs-web`, `checkd`, `funnel`, `mail-server`, and `sangah-landing` as
+        consumers.
+      - >-
+        Include the planned Sangah requests operator panel as a future `sangah-landing`
+        integration.
+      - >-
+        Record each consumer's OAuth role, issuer, redirects, scopes, resources, session model,
+        token use, and migration steps.
+      - >-
+        Identify each consumer's OpenID Connect client, API resource server, MCP client, and MCP
+        server roles.
+      - >-
+        Compare consumers before choosing the first migration, then replace its custom protocol
+        handling.
+      - >-
+        Keep user provisioning, application roles, routes, and authorization policy in each
+        owning application.
+      - Document migration steps for other consumers and the planned requests operator panel.
+      - Add timeouts, response checks, safe retries where allowed, and typed protocol errors.
+      - >-
+        Redact diagnostics and exclude credentials, authorization codes, tokens, verifiers, and
+        user input from logs.
+      - Use `@eliware/log` 15.0.1 with an injectable logger and structured operation context.
+      - >-
+        Replace the greeting sample with focused native ESM modules and align exports with
+        declarations.
+      - >-
+        Mirror source modules under `tests/` and align tests, specifications, documentation, and
+        examples.
+      - Add a reproducible local smoke setup with disposable MariaDB and verified TLS.
+      - >-
+        Keep production credentials out of smoke setup and production issuers out of automated
+        tests.
+      - Keep package metadata at 15.0.1 and release notes to one initial baseline section.
+      - >-
+        Run `npm ci`, `npm test`, `npm run typecheck`, and `npm run pack` before release
+        consideration.
+      - Publish only through the approved Operations release handoff.
     donts:
-      - Do not call the scaffold greeting API the finished EliD client.
-      - Do not log credentials, tokens, or user input.
+      - Do not ship browser OAuth code, browser UI, or application session storage.
+      - Do not expose client secrets or server-held tokens to browser JavaScript.
+      - Do not require an application-specific web framework or session architecture.
+      - Do not add implicit, hybrid, or resource-owner-password flows.
+      - >-
+        Do not hardcode application domains or require shared client credentials across
+        applications.
+      - Do not include client registration or issuer administration in this library.
+      - Do not decode access tokens to identify users or infer token audiences.
+      - Do not add resource-server validation or token introspection to this client library.
+      - Do not duplicate MCP resource-server validation in this client library.
+      - Do not combine MCP authorization with user sign-in.
+      - >-
+        Do not move application routes, cookie policy, CSRF protection, session storage, or
+        authorization rules into this library.
+      - Do not move user provisioning or application roles into this library.
+      - Do not call the greeting scaffold the finished EliD client.
+      - Do not log credentials, authorization codes, tokens, verifiers, or user input.
+      - Do not read production credentials or use a production issuer in automated tests.

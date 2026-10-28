@@ -1,17 +1,15 @@
 # Examples
 
-The [basic.mjs](basic.mjs) example shows the scaffold greeting and structured log output.
+The [discover.mjs](discover.mjs) example checks issuer discovery through the public client API.
 
 ## Prerequisites
 
-Use Node.js 26 or later in an ESM project.
-The greeting sample is not the EliD OAuth 2.1 client API. It uses the default logger from `@eliware/log`.
-Run the example from the repository root to use the local source.
+Use Node.js 26 or later. Set `ELID_ISSUER_URL`, `ELID_CLIENT_ID`, `ELID_REDIRECT_URI`, and `ELID_SCOPES`.
 
 ## Command
 
-Run `node examples/basic.mjs` from the repository root.
+Run `node examples/discover.mjs` from the repository root.
 
 ## Expected result
 
-The example logs a `createGreeting` operation record and prints `Hello, Eli!`.
+The example prints the validated issuer and discovered endpoint URLs.

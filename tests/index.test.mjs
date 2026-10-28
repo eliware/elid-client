@@ -1,6 +1,10 @@
 import { expect, test } from "@jest/globals";
-import { createGreeting } from "../src/index.mjs";
+import { createEliDClient, ElidClientError } from "../src/index.mjs";
 
-test("exports the public greeting function", () => {
-  expect(createGreeting("Eliware", { logger: { info: () => undefined } })).toBe("Hello, Eliware!");
+test("exports the EliD client factory and typed error", () => {
+  expect(typeof createEliDClient).toBe("function");
+  expect(new ElidClientError("invalid_argument", "Invalid input.")).toMatchObject({
+    name: "ElidClientError",
+    code: "invalid_argument",
+  });
 });

@@ -1,36 +1,57 @@
 # Usage
 
-This repository provides an initial scaffold for `@eliware/elid-client`. The EliD OAuth 2.1 client API has not been implemented. The greeting function is sample code.
+Install `@eliware/elid-client` in a Node.js 26 or later server application. The package supports OAuth and OpenID Connect client operations for server-rendered applications and backends for frontend applications.
 
-## Requirements
+## Install the package
 
-Use Node.js 26 or later to run the sample and validate this repository. Use an ESM project to import the sample API.
+Run this command in the consuming application:
 
-## Install development dependencies
+```sh
+npm install @eliware/elid-client
+```
+
+Import the public API from `@eliware/elid-client`. The package uses native ESM and exposes TypeScript declarations.
+
+## Configure a client
+
+Create a separate EliD client registration for each application. Store confidential client secrets in the application's approved secret store. Set the issuer, client ID, exact redirect URI, scopes, and optional resource through application runtime configuration.
+
+```js
+import { createEliDClient } from "@eliware/elid-client";
+
+const client = createEliDClient({
+  issuer: process.env.ELID_ISSUER_URL,
+  clientId: process.env.ELID_CLIENT_ID,
+  clientSecret: process.env.ELID_CLIENT_SECRET,
+  redirectUri: process.env.ELID_REDIRECT_URI,
+  scopes: process.env.ELID_SCOPES.split(" "),
+  resource: process.env.ELID_RESOURCE || undefined,
+});
+```
+
+For a public client, omit `clientSecret`. Use an HTTPS issuer and redirect URI in deployed applications. The client permits an HTTP issuer on loopback for local development.
+
+## Start a server-side sign-in
+
+Call `createAuthorizationRequest()` before redirecting the user. Store the returned transaction in the application session store on the server. Do not store it in browser JavaScript or browser storage.
+
+When the callback arrives, atomically consume the saved transaction. Pass its state and the returned code to `exchangeAuthorizationCode()`. Keep session creation, cookie policy, CSRF protection, and application routes in the consuming application.
+
+Call `getUserInfo()` with the bearer access token and the subject from the verified ID Token. Call `refreshTokens()` with the refresh token and initial nonce. Save replacement tokens atomically. Call `revokeToken()` when the application ends its session or no longer needs a token.
+
+## Run the discovery example
+
+Set `ELID_ISSUER_URL`, `ELID_CLIENT_ID`, `ELID_REDIRECT_URI`, and `ELID_SCOPES` in the process environment. Set `NODE_EXTRA_CA_CERTS` when the local issuer uses a private test CA.
 
 Run this command from the repository root:
 
 ```sh
-npm ci
+node examples/discover.mjs
 ```
 
-## Run the sample
+The example prints validated issuer and endpoint URLs. It does not print client secrets, tokens, or transaction values.
 
-Run this command from the repository root:
-
-```sh
-node examples/basic.mjs
-```
-
-The command prints:
-
-```text
-Hello, Eli!
-```
-
-The example calls `createGreeting` with the name `Eli`. Read the [API reference](api.md) for details.
-
-## Validate the repository
+## Validate a checkout
 
 Run these commands from the repository root:
 
@@ -41,8 +62,10 @@ npm run typecheck
 npm run pack
 ```
 
-`npm ci` installs locked dependencies. `npm test` runs aggregate repository checks. `npm run typecheck` checks the TypeScript declaration. `npm run pack` checks the files that npm includes in a package.
+The test suite uses mocked provider responses. It does not contact a production issuer. Run `node test-fixtures/verify-local-smoke.mjs` with the local smoke environment to test EliD.
 
-## Package status
+## Package contents and releases
 
-The package metadata identifies the planned EliD client library. The current source exports only a greeting sample. Do not publish this scaffold as the completed OAuth 2.1 client.
+The npm package includes `src/`, `docs/`, `examples/`, `specs/`, `README.md`, `AGENTS.md`, `LICENSE`, `RELEASE_NOTES.md`, and `package.json`. It excludes tests, test fixtures, local environment files, and build output.
+
+Use `package.json.version` as the version source. Match each release tag to `vMAJOR.MINOR.PATCH`. Run `npm run pack` before release consideration. Publish only through the approved Operations release handoff with npm provenance.

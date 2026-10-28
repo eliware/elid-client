@@ -39,7 +39,7 @@ Update specifications, tests, declarations, documentation, examples, and release
 
 ## Library
 
-The EliD OAuth 2.1 client API has not been implemented. Replace the greeting sample with the client API and keep exports synchronized with declarations.
+Keep the server-side OAuth client API in `src/`. Keep exports synchronized with declarations.
 
 Run focused tests first during development.
 Run one test file with `npm test -- tests/path/to/example.test.mjs`.

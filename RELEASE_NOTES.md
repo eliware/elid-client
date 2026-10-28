@@ -4,10 +4,8 @@
 
 ### Added
 
-- Add the baseline EliD client package scaffold with native ESM, declarations, documentation, tests, and examples.
-- Add structured logging through `@eliware/log` with an injectable logger option.
-
-### Changed
-
-- Align package metadata, dependencies, and repository guidance with Eliware Test v15.0.1.
-- Record the remaining OAuth client development plan in issue #1.
+- Add server-side OAuth Authorization Code with PKCE using S256.
+- Add issuer discovery, JWKS resolution, and OpenID Connect ID Token verification.
+- Add UserInfo, token refresh, and token revocation operations.
+- Add resource indicators, safe HTTP handling, typed errors, and structured logging.
+- Add native ESM exports, TypeScript declarations, usage guidance, and runnable examples.

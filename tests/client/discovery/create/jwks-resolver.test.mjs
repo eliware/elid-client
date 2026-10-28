@@ -1,6 +1,7 @@
 import { jwtVerify } from "jose";
 import { expect, jest, test } from "@jest/globals";
 import { createOidcKeys } from "../../../../test-fixtures/create-oidc-keys.mjs";
+import { signIdToken } from "../../../../test-fixtures/sign-id-token.mjs";
 import { createJwksResolver } from "../../../../src/client/discovery/create/jwks-resolver.mjs";
 
 test("resolves and caches public JWKS keys with injected safe fetch", async () => {
@@ -14,7 +15,8 @@ test("resolves and caches public JWKS keys with injected safe fetch", async () =
     });
   });
   const resolver = createJwksResolver(fetcher, { jwks_uri: "https://issuer.example/jwks" }, 1000);
-  const token = await keys.sign(
+  const token = await signIdToken(
+    keys.privateKey,
     { iat: issuedAt, exp: issuedAt + 600 },
     {
       issuer: "https://issuer.example",

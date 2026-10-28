@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { expect, jest, test } from "@jest/globals";
 import { createOidcKeys } from "../../test-fixtures/create-oidc-keys.mjs";
+import { signIdToken } from "../../test-fixtures/sign-id-token.mjs";
 import { createEliDClient } from "../../src/client/create-client.mjs";
 
 const issuer = "https://issuer.example";
@@ -54,7 +55,8 @@ test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and 
           token_type: "Bearer",
           expires_in: 3600,
           scope: "openid profile",
-          id_token: await keys.sign(
+          id_token: await signIdToken(
+            keys.privateKey,
             { nonce, iat: now / 1000, exp: now / 1000 + 3600 },
             {
               issuer,
@@ -75,7 +77,8 @@ test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and 
         token_type: "Bearer",
         expires_in: 3600,
         scope: "openid profile",
-        id_token: await keys.sign(
+        id_token: await signIdToken(
+          keys.privateKey,
           { iat: now / 1000, exp: now / 1000 + 3600 },
           {
             issuer,

@@ -3,13 +3,12 @@ import { createAuthorizationRequest } from "./authorization/create/request.mjs";
 import { validateTransaction } from "./authorization/validate-transaction.mjs";
 import { ElidClientError } from "./errors/client-error.mjs";
 import { createMetadataLoader } from "./discovery/create/loader.mjs";
-import { createJwksResolver } from "./discovery/create/jwks-resolver.mjs";
 import { validateOptions } from "./options/validate/options.mjs";
-import { normalizeTokenResponse } from "./protocol/normalize-response.mjs";
+import { createIdTokenVerifier } from "./protocol/id-token-verifier.mjs";
+import { createTokenResponseCompleter } from "./protocol/complete-token-response.mjs";
 import { requestRefreshToken } from "./protocol/refresh.mjs";
 import { revokeToken as sendRevocation } from "./protocol/revoke.mjs";
 import { requestToken } from "./protocol/request.mjs";
-import { verifyIdToken } from "./protocol/verify-id-token.mjs";
 import { getUserInfo as requestUserInfo } from "./userinfo/get-user-info.mjs";
 
 export function createEliDClient(options = {}) {
@@ -18,58 +17,8 @@ export function createEliDClient(options = {}) {
     logger: options.logger === undefined ? log : options.logger,
   });
   const loadMetadata = createMetadataLoader(config);
-  let jwksUri;
-  let keyResolver;
-
-  async function verifiedClaims(idToken, nonce, metadata, allowMissingNonce) {
-    if (!keyResolver || jwksUri !== metadata.jwks_uri) {
-      jwksUri = metadata.jwks_uri;
-      keyResolver = createJwksResolver(config.fetch, metadata, config.timeoutMs);
-    }
-    return verifyIdToken(idToken, {
-      clientId: config.clientId,
-      issuer: config.issuer,
-      nonce,
-      algorithms: metadata.id_token_signing_alg_values_supported,
-      now: config.now,
-      clockToleranceSeconds: config.clockToleranceSeconds,
-      maxIdTokenAgeSeconds: config.maxIdTokenAgeSeconds,
-      allowMissingNonce,
-      keyResolver,
-    });
-  }
-
-  async function completeTokenResponse(
-    response,
-    nonce,
-    metadata,
-    requireIdToken,
-    allowMissingNonce,
-  ) {
-    const tokens = normalizeTokenResponse(response);
-    if (!config.scopes.includes("openid")) {
-      return {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        tokenType: tokens.tokenType,
-        expiresIn: tokens.expiresIn,
-        scope: tokens.scope,
-      };
-    }
-    if (!tokens.idToken && requireIdToken) {
-      throw new ElidClientError(
-        "invalid_token_response",
-        "The issuer returned no ID Token for the openid scope.",
-      );
-    }
-    if (!tokens.idToken) return tokens;
-    const idTokenClaims = await verifiedClaims(tokens.idToken, nonce, metadata, allowMissingNonce);
-    return {
-      ...tokens,
-      idTokenClaims,
-      identity: { issuer: idTokenClaims.iss, subject: idTokenClaims.sub },
-    };
-  }
+  const verifyClaims = createIdTokenVerifier(config);
+  const completeTokenResponse = createTokenResponseCompleter(config, verifyClaims);
 
   async function exchangeAuthorizationCode(input = {}) {
     const { code, transaction } = validateTransaction(input, config);

@@ -1,5 +1,6 @@
 import { expect, test } from "@jest/globals";
 import { createOidcKeys } from "../../../test-fixtures/create-oidc-keys.mjs";
+import { signIdToken } from "../../../test-fixtures/sign-id-token.mjs";
 import { verifyIdToken } from "../../../src/client/protocol/verify-id-token.mjs";
 
 const issuer = "https://issuer.example";
@@ -20,7 +21,8 @@ const validation = (publicKey, overrides = {}) => ({
 
 test("verifies ID Token signature, issuer, audience, time, subject, and nonce", async () => {
   const keys = await createOidcKeys();
-  const token = await keys.sign(
+  const token = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000, exp: now / 1000 + 300 },
     {
       issuer,
@@ -44,7 +46,8 @@ test("rejects empty tokens, bad signatures, issuers, audiences, and expired clai
   await expect(verifyIdToken("", validation(keys.publicKey))).rejects.toMatchObject({
     code: "invalid_id_token",
   });
-  const good = await keys.sign(
+  const good = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000, exp: now / 1000 + 300 },
     {
       issuer,
@@ -57,7 +60,8 @@ test("rejects empty tokens, bad signatures, issuers, audiences, and expired clai
   await expect(verifyIdToken(good, validation(other.publicKey))).rejects.toMatchObject({
     code: "invalid_id_token",
   });
-  const wrongIssuer = await keys.sign(
+  const wrongIssuer = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000, exp: now / 1000 + 300 },
     {
       issuer: "https://other.example",
@@ -70,7 +74,8 @@ test("rejects empty tokens, bad signatures, issuers, audiences, and expired clai
   await expect(verifyIdToken(wrongIssuer, validation(keys.publicKey))).rejects.toMatchObject({
     code: "invalid_id_token",
   });
-  const wrongAudience = await keys.sign(
+  const wrongAudience = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000, exp: now / 1000 + 300 },
     {
       issuer,
@@ -83,7 +88,8 @@ test("rejects empty tokens, bad signatures, issuers, audiences, and expired clai
   await expect(verifyIdToken(wrongAudience, validation(keys.publicKey))).rejects.toMatchObject({
     code: "invalid_id_token",
   });
-  const expired = await keys.sign(
+  const expired = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000 - 500, exp: now / 1000 - 1 },
     {
       issuer,
@@ -100,14 +106,16 @@ test("rejects empty tokens, bad signatures, issuers, audiences, and expired clai
 
 test("rejects missing identity claims and future issue times", async () => {
   const keys = await createOidcKeys();
-  const missingSubject = await keys.sign(
+  const missingSubject = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000, exp: now / 1000 + 300 },
     { issuer, audience: clientId, issuedAt: now / 1000, expiresAt: now / 1000 + 300 },
   );
   await expect(verifyIdToken(missingSubject, validation(keys.publicKey))).rejects.toMatchObject({
     code: "invalid_id_token",
   });
-  const futureIssued = await keys.sign(
+  const futureIssued = await signIdToken(
+    keys.privateKey,
     { nonce, iat: now / 1000 + 30, exp: now / 1000 + 300 },
     {
       issuer,
@@ -126,7 +134,8 @@ test("validates authorized party and multi-audience tokens", async () => {
   const keys = await createOidcKeys();
   const claims = { nonce, iat: now / 1000, exp: now / 1000 + 300 };
   const make = (audience, extra = {}) =>
-    keys.sign(
+    signIdToken(
+      keys.privateKey,
       { ...claims, ...extra },
       { issuer, audience, subject: "user-1", issuedAt: now / 1000, expiresAt: now / 1000 + 300 },
     );
@@ -150,7 +159,8 @@ test("validates authorized party and multi-audience tokens", async () => {
 
 test("rejects a nonce that does not match the transaction", async () => {
   const keys = await createOidcKeys();
-  const token = await keys.sign(
+  const token = await signIdToken(
+    keys.privateKey,
     { nonce: "other-nonce", iat: now / 1000, exp: now / 1000 + 300 },
     {
       issuer,
@@ -168,7 +178,7 @@ test("rejects a nonce that does not match the transaction", async () => {
 test("allows a missing refresh nonce and checks a present nonce", async () => {
   const keys = await createOidcKeys();
   const make = (claims) =>
-    keys.sign(claims, {
+    signIdToken(keys.privateKey, claims, {
       issuer,
       audience: clientId,
       subject: "user-1",

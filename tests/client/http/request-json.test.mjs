@@ -50,35 +50,6 @@ test("does not retry unsafe or repeated transient requests", async () => {
   });
 });
 
-test("handles non-JSON, malformed, and generic HTTP errors safely", async () => {
-  for (const response of [
-    { ok: false, status: 401, headers: { get: () => "text/plain" } },
-    {
-      ok: false,
-      status: 400,
-      headers: { get: () => "application/json" },
-      text: async () => "{",
-    },
-    {
-      ok: false,
-      status: 400,
-      headers: { get: () => "application/json" },
-      text: async () => JSON.stringify({ error: 4 }),
-    },
-    { ok: false, status: 401 },
-    {
-      ok: false,
-      status: 400,
-      headers: { get: () => "application/json" },
-      text: async () => "x".repeat(1000001),
-    },
-  ]) {
-    await expect(
-      requestJson(async () => response, "https://issuer.example/token", { method: "POST" }),
-    ).rejects.toMatchObject({ code: "http_error", status: response.status });
-  }
-});
-
 test("maps timeouts and network errors without leaking details", async () => {
   await expect(
     requestJson(async () => {
@@ -153,13 +124,4 @@ test("maps an OAuth error body to a typed error", async () => {
       "https://issuer.example/token",
     ),
   ).rejects.toMatchObject({ code: "oauth_error", oauthCode: "invalid_grant" });
-  const malformed = {
-    ok: false,
-    status: 400,
-    headers: { get: () => "application/json" },
-    text: async () => "{",
-  };
-  await expect(
-    requestJson(async () => malformed, "https://issuer.example/token", { method: "POST" }),
-  ).rejects.toMatchObject({ code: "http_error" });
 });

@@ -23,6 +23,7 @@ test.each([
   [{ token_endpoint: "http://attacker.example/token" }],
   [{ jwks_uri: "not a URL" }],
   [{ userinfo_endpoint: "https://issuer.example/userinfo?token=leak" }],
+  [{ revocation_endpoint: "https://issuer.example/revoke?token=leak" }],
   [{ revocation_endpoint: "http://attacker.example/revoke" }],
 ])("rejects unsafe endpoint URLs", (overrides) => {
   expect(() => validateEndpoints(endpoints(overrides))).toThrow();

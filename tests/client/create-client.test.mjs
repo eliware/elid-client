@@ -134,11 +134,8 @@ test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and 
     preferred_username: "eli",
   });
   await expect(
-    client.refreshTokens({ refreshToken: tokens.refreshToken, nonce }),
-  ).resolves.toMatchObject({
-    accessToken: "opaque-access-token-2",
-    refreshToken: "refresh-token-2",
-  });
+    client.refreshTokens({ refreshToken: tokens.refreshToken, nonce, identity: tokens.identity }),
+  ).resolves.toMatchObject({ identity: tokens.identity });
   await expect(client.revokeToken("refresh-token-2", "refresh_token")).resolves.toBeUndefined();
   expect(
     calls.filter((call) => call.url.pathname === "/.well-known/openid-configuration"),
@@ -253,7 +250,12 @@ test.each([
   [
     "refresh",
     { access_token: "access-next", token_type: "Bearer" },
-    (client) => client.refreshTokens({ refreshToken: "refresh-current", nonce: "saved-nonce" }),
+    (client) =>
+      client.refreshTokens({
+        refreshToken: "refresh-current",
+        nonce: "saved-nonce",
+        identity: { issuer, subject: "user-1" },
+      }),
     undefined,
   ],
 ])("handles %s responses without an ID Token", async (_flow, tokenResponse, invoke, errorCode) => {
@@ -285,6 +287,7 @@ test.each([
     await expect(result).resolves.toMatchObject({
       accessToken: "access-next",
       tokenType: "Bearer",
+      identity: { issuer, subject: "user-1" },
     });
   }
 });

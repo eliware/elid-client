@@ -33,7 +33,7 @@ const client = createEliDClient({
 | `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.         |
 | `logger`                | No       | A logger object with an `info` method. The default is `@eliware/log`.                      |
 
-The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local use. The callback URI must use HTTPS.
+The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local use. Issuer and callback URLs cannot include query strings or fragments.
 
 ## Load issuer metadata
 
@@ -97,6 +97,7 @@ The method sends the access token to the discovered UserInfo endpoint. It checks
 const nextTokens = await client.refreshTokens({
   refreshToken: tokens.refreshToken,
   nonce: transaction.nonce,
+  identity: tokens.identity,
 });
 
 if (nextTokens.refreshToken) {
@@ -107,6 +108,8 @@ if (nextTokens.refreshToken) {
 The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement.
 
 For OpenID Connect clients, pass the initial authentication nonce. A refreshed ID Token can omit `nonce`. If it contains `nonce`, the client requires a match with the initial value. The client verifies its signature and claims.
+
+Pass the prior verified `identity` when refreshing. If EliD omits an ID Token, the result carries that identity forward. If EliD returns an ID Token, the client returns the newly verified identity. The supplied identity issuer must match the configured issuer.
 
 OAuth-only clients can refresh without a nonce.
 

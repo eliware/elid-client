@@ -85,6 +85,8 @@ Use your framework's response and session APIs for the example functions. Store 
 
 For OpenID Connect, call `getUserInfo()` with the bearer access token and the subject from the verified ID Token when the issuer advertises a UserInfo endpoint. Keep the initial authentication nonce in server-side session state if you will refresh tokens. Pass it to `refreshTokens()` when the client uses the `openid` scope. A refreshed ID Token can omit `nonce`. If it contains `nonce`, the client checks that it matches the initial value.
 
+Pass the saved `identity` to `refreshTokens()` too. The refreshed result keeps it when EliD omits an ID Token. The client replaces it with the newly verified identity when EliD returns an ID Token.
+
 OAuth-only clients can refresh without a nonce. Save replacement tokens atomically. The refresh result can omit an ID Token. Keep the prior verified identity when that happens. Call `revokeToken()` when the application ends its session or stops using a token.
 
 Token responses include a bearer `accessToken`. They can include a `refreshToken`, `expiresIn`, and granted `scope`. OpenID Connect responses can also include `idToken`, `idTokenClaims`, and `identity`. Each of these fields is optional. The application must define how it stores tokens and responds when a token expires or refresh fails.

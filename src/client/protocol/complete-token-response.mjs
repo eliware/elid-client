@@ -8,6 +8,7 @@ export function createTokenResponseCompleter(config, verifyClaims) {
     metadata,
     requireIdToken,
     allowMissingNonce,
+    priorIdentity,
   ) {
     const tokens = normalizeTokenResponse(response);
     if (!config.scopes.includes("openid")) {
@@ -25,7 +26,7 @@ export function createTokenResponseCompleter(config, verifyClaims) {
         "The issuer returned no ID Token for the openid scope.",
       );
     }
-    if (!tokens.idToken) return tokens;
+    if (!tokens.idToken) return priorIdentity ? { ...tokens, identity: priorIdentity } : tokens;
     const idTokenClaims = await verifyClaims(tokens.idToken, nonce, metadata, allowMissingNonce);
     return {
       ...tokens,

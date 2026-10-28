@@ -34,6 +34,9 @@ test("controls query strings and fragments", () => {
   expect(() => validateUrl("https://api.example/resource?tenant=1", "resource")).toThrow(
     "resource contains unsupported URL parts",
   );
+  expect(() => validateUrl("https://issuer.example?tenant=1", "issuer")).toThrow(
+    "issuer contains unsupported URL parts",
+  );
   expect(() =>
     validateUrl("https://api.example/resource#part", "resource", { allowQuery: true }),
   ).toThrow("resource contains unsupported URL parts");

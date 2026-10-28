@@ -49,7 +49,11 @@ export type EliDClient = {
     error?: unknown;
   }): Promise<TokenSet>;
   getUserInfo(accessToken: string, expectedSubject: string): Promise<Record<string, unknown>>;
-  refreshTokens(input: { refreshToken: string; nonce?: string }): Promise<TokenSet>;
+  refreshTokens(input: {
+    refreshToken: string;
+    nonce?: string;
+    identity?: TokenSet["identity"];
+  }): Promise<TokenSet>;
   revokeToken(token: string, tokenTypeHint?: "access_token" | "refresh_token"): Promise<void>;
 };
 

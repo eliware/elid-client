@@ -4,6 +4,7 @@ import { validateTransaction } from "./authorization/validate-transaction.mjs";
 import { ElidClientError } from "./errors/client-error.mjs";
 import { createMetadataLoader } from "./discovery/create/loader.mjs";
 import { validateOptions } from "./options/validate/options.mjs";
+import { validateIdentity } from "./options/validate/identity.mjs";
 import { createIdTokenVerifier } from "./protocol/id-token-verifier.mjs";
 import { createTokenResponseCompleter } from "./protocol/complete-token-response.mjs";
 import { requestRefreshToken } from "./protocol/refresh.mjs";
@@ -38,6 +39,7 @@ export function createEliDClient(options = {}) {
 
   async function refreshTokens(input = {}) {
     const { refreshToken, nonce } = input;
+    const identity = validateIdentity(input.identity, config.issuer);
     if (config.scopes.includes("openid") && (typeof nonce !== "string" || nonce.length === 0)) {
       throw new ElidClientError(
         "invalid_argument",
@@ -46,7 +48,7 @@ export function createEliDClient(options = {}) {
     }
     const metadata = await loadMetadata();
     const response = await requestRefreshToken(config.fetch, config, metadata, refreshToken);
-    const tokens = await completeTokenResponse(response, nonce, metadata, false, true);
+    const tokens = await completeTokenResponse(response, nonce, metadata, false, true, identity);
     config.logger.info("Tokens refreshed", { operation: "refreshTokens" });
     return tokens;
   }

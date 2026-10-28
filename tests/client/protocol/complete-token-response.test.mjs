@@ -27,6 +27,14 @@ test("requires ID Tokens for OpenID Connect code exchanges", async () => {
   });
 });
 
+test("preserves the prior identity when a refresh response omits an ID Token", async () => {
+  const priorIdentity = { issuer: claims.iss, subject: claims.sub };
+  const complete = createTokenResponseCompleter({ scopes: ["openid"] }, jest.fn());
+  await expect(complete(response, "nonce", {}, false, true, priorIdentity)).resolves.toMatchObject({
+    identity: priorIdentity,
+  });
+});
+
 test("verifies returned ID Tokens and builds identity fields", async () => {
   const verifyClaims = jest.fn(async () => claims);
   const complete = createTokenResponseCompleter({ scopes: ["openid"] }, verifyClaims);

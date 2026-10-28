@@ -39,8 +39,6 @@ Update specifications, tests, declarations, documentation, examples, and release
 
 ## Library
 
-Keep the server-side OAuth client API in `src/`. Keep exports synchronized with declarations.
-
 Run focused tests first during development.
 Run one test file with `npm test -- tests/path/to/example.test.mjs`.
 Run multiple test files with `npm test -- tests/path/to/first.test.mjs tests/path/to/second.test.mjs`.

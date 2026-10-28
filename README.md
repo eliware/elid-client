@@ -55,7 +55,7 @@ Keep credentials, secret values, private data, and runtime state out of Git.
 
 ## API
 
-See the [API reference](docs/api.md) for the sample `createGreeting` function. This function is not the EliD client API.
+See the [API reference](docs/api.md) for the sample `createGreeting` function and its injectable structured logger. This function is not the EliD client API.
 
 ## Packaging
 

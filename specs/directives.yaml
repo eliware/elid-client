@@ -7,5 +7,8 @@ directives:
         Build the EliD OAuth 2.1 client API with native ESM, types, documentation, tests,
         and examples.
       - Keep the package identity and public API aligned with the repository.
+      - Use `@eliware/log` 15.0.1 for structured logs with an injectable logger.
+      - Add operation context to logs without credentials, tokens, or user input.
     donts:
       - Do not call the scaffold greeting API the finished EliD client.
+      - Do not log credentials, tokens, or user input.

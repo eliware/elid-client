@@ -5,7 +5,7 @@ This directory explains the scaffold API and the planned EliD client library.
 ## Start here
 
 - Read [Usage](usage.md) to install dependencies, run the sample, and validate changes.
-- Read [API reference](api.md) for the sample export and its behavior.
+- Read [API reference](api.md) for the sample export, logger option, and behavior.
 
 ## Project status
 

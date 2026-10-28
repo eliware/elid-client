@@ -1,5 +1,5 @@
 import { createGreeting } from "../create-greeting.mjs";
 
-export function createBasicExampleGreeting() {
-  return createGreeting("Eli");
+export function createBasicExampleGreeting(logger) {
+  return createGreeting("Eli", { logger });
 }

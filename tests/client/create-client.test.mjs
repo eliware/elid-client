@@ -286,6 +286,7 @@ test.each([
   } else {
     await expect(result).resolves.toMatchObject({
       accessToken: "access-next",
+      refreshToken: "refresh-current",
       tokenType: "Bearer",
       identity: { issuer, subject: "user-1" },
     });

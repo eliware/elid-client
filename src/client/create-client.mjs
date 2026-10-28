@@ -49,6 +49,7 @@ export function createEliDClient(options = {}) {
     const metadata = await loadMetadata();
     const response = await requestRefreshToken(config.fetch, config, metadata, refreshToken);
     const tokens = await completeTokenResponse(response, nonce, metadata, false, true, identity);
+    if (tokens.refreshToken === undefined) tokens.refreshToken = refreshToken;
     config.logger.info("Tokens refreshed", { operation: "refreshTokens" });
     return tokens;
   }

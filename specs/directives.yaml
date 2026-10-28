@@ -41,6 +41,8 @@ directives:
       - Use UserInfo for identity claims that EliD supports and documents.
       - Send the RFC 8707 resource value when the target API requires an audience-bound token.
       - Support rotated refresh tokens and reject replay, expiry, and revocation errors safely.
+      - Allow refreshed ID Tokens to omit `nonce`.
+      - Reject a refreshed ID Token when its `nonce` differs from the initial value.
       - >-
         Provide token revocation through the discovered endpoint and advertised client
         authentication methods.

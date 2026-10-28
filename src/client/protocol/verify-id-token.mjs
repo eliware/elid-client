@@ -12,6 +12,7 @@ export async function verifyIdToken(
     now,
     clockToleranceSeconds,
     maxIdTokenAgeSeconds,
+    allowMissingNonce = false,
     keyResolver,
   },
 ) {
@@ -39,5 +40,6 @@ export async function verifyIdToken(
     nowSeconds: Math.floor(now() / 1000),
     clockToleranceSeconds,
     maxIdTokenAgeSeconds,
+    allowMissingNonce,
   });
 }

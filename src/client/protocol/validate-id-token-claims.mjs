@@ -2,7 +2,14 @@ import { ElidClientError } from "../errors/client-error.mjs";
 
 export function validateIdTokenClaims(
   payload,
-  { clientId, nonce, nowSeconds, clockToleranceSeconds, maxIdTokenAgeSeconds },
+  {
+    clientId,
+    nonce,
+    nowSeconds,
+    clockToleranceSeconds,
+    maxIdTokenAgeSeconds,
+    allowMissingNonce = false,
+  },
 ) {
   if (
     typeof payload.sub !== "string" ||
@@ -30,7 +37,7 @@ export function validateIdTokenClaims(
       "ID Token audience requires a matching authorized party.",
     );
   }
-  if (payload.nonce !== nonce) {
+  if ((!allowMissingNonce || payload.nonce !== undefined) && payload.nonce !== nonce) {
     throw new ElidClientError(
       "nonce_mismatch",
       "ID Token nonce does not match the authorization transaction.",

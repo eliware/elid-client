@@ -76,7 +76,7 @@ test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and 
         expires_in: 3600,
         scope: "openid profile",
         id_token: await keys.sign(
-          { nonce, iat: now / 1000, exp: now / 1000 + 3600 },
+          { iat: now / 1000, exp: now / 1000 + 3600 },
           {
             issuer,
             audience: clientId,

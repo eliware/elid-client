@@ -164,3 +164,31 @@ test("rejects a nonce that does not match the transaction", async () => {
     code: "nonce_mismatch",
   });
 });
+
+test("allows a missing refresh nonce and checks a present nonce", async () => {
+  const keys = await createOidcKeys();
+  const make = (claims) =>
+    keys.sign(claims, {
+      issuer,
+      audience: clientId,
+      subject: "user-1",
+      issuedAt: now / 1000,
+      expiresAt: now / 1000 + 300,
+    });
+  const baseClaims = { iat: now / 1000, exp: now / 1000 + 300 };
+  const missingNonce = await make(baseClaims);
+  await expect(verifyIdToken(missingNonce, validation(keys.publicKey))).rejects.toMatchObject({
+    code: "nonce_mismatch",
+  });
+  await expect(
+    verifyIdToken(missingNonce, validation(keys.publicKey, { allowMissingNonce: true })),
+  ).resolves.toMatchObject({ sub: "user-1" });
+  const matchingNonce = await make({ ...baseClaims, nonce });
+  await expect(
+    verifyIdToken(matchingNonce, validation(keys.publicKey, { allowMissingNonce: true })),
+  ).resolves.toMatchObject({ nonce });
+  const differentNonce = await make({ ...baseClaims, nonce: "different-nonce" });
+  await expect(
+    verifyIdToken(differentNonce, validation(keys.publicKey, { allowMissingNonce: true })),
+  ).rejects.toMatchObject({ code: "nonce_mismatch" });
+});

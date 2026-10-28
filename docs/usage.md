@@ -39,7 +39,9 @@ Call `createAuthorizationRequest()` before redirecting the user. Store the retur
 
 When the callback arrives, atomically consume the saved transaction. Pass its state and the returned code to `exchangeAuthorizationCode()`. Keep session creation, cookie policy, CSRF protection, and application routes in the consuming application.
 
-For OpenID Connect, call `getUserInfo()` with the bearer access token and the subject from the verified ID Token. Pass the initial nonce to `refreshTokens()` when the client uses the `openid` scope. OAuth-only clients can refresh without a nonce. Save replacement tokens atomically. Call `revokeToken()` when the application ends its session or stops using a token.
+For OpenID Connect, call `getUserInfo()` with the bearer access token and the subject from the verified ID Token. Pass the initial authentication nonce to `refreshTokens()` when the client uses the `openid` scope. A refreshed ID Token can omit `nonce`. If it contains `nonce`, the client checks that it matches the initial value.
+
+OAuth-only clients can refresh without a nonce. Save replacement tokens atomically. Call `revokeToken()` when the application ends its session or stops using a token.
 
 ## Run the discovery example
 

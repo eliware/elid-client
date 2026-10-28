@@ -21,7 +21,7 @@ export function createEliDClient(options = {}) {
   let jwksUri;
   let keyResolver;
 
-  async function verifiedClaims(idToken, nonce, metadata) {
+  async function verifiedClaims(idToken, nonce, metadata, allowMissingNonce) {
     if (!keyResolver || jwksUri !== metadata.jwks_uri) {
       jwksUri = metadata.jwks_uri;
       keyResolver = createJwksResolver(config.fetch, metadata, config.timeoutMs);
@@ -34,11 +34,18 @@ export function createEliDClient(options = {}) {
       now: config.now,
       clockToleranceSeconds: config.clockToleranceSeconds,
       maxIdTokenAgeSeconds: config.maxIdTokenAgeSeconds,
+      allowMissingNonce,
       keyResolver,
     });
   }
 
-  async function completeTokenResponse(response, nonce, metadata, requireIdToken) {
+  async function completeTokenResponse(
+    response,
+    nonce,
+    metadata,
+    requireIdToken,
+    allowMissingNonce,
+  ) {
     const tokens = normalizeTokenResponse(response);
     if (!config.scopes.includes("openid")) {
       return {
@@ -56,7 +63,7 @@ export function createEliDClient(options = {}) {
       );
     }
     if (!tokens.idToken) return tokens;
-    const idTokenClaims = await verifiedClaims(tokens.idToken, nonce, metadata);
+    const idTokenClaims = await verifiedClaims(tokens.idToken, nonce, metadata, allowMissingNonce);
     return {
       ...tokens,
       idTokenClaims,
@@ -75,7 +82,7 @@ export function createEliDClient(options = {}) {
     };
     if (transaction.resource) parameters.resource = transaction.resource;
     const response = await requestToken(config.fetch, config, metadata, parameters);
-    const tokens = await completeTokenResponse(response, transaction.nonce, metadata, true);
+    const tokens = await completeTokenResponse(response, transaction.nonce, metadata, true, false);
     config.logger.info("Authorization code exchanged", { operation: "exchangeAuthorizationCode" });
     return tokens;
   }
@@ -90,7 +97,7 @@ export function createEliDClient(options = {}) {
     }
     const metadata = await loadMetadata();
     const response = await requestRefreshToken(config.fetch, config, metadata, refreshToken);
-    const tokens = await completeTokenResponse(response, nonce, metadata, false);
+    const tokens = await completeTokenResponse(response, nonce, metadata, false, true);
     config.logger.info("Tokens refreshed", { operation: "refreshTokens" });
     return tokens;
   }

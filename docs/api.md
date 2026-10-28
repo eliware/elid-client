@@ -100,7 +100,11 @@ const nextTokens = await client.refreshTokens({
 await client.revokeToken(nextTokens.refreshToken, "refresh_token");
 ```
 
-The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement. For OpenID Connect clients, pass the initial nonce. The method verifies any returned ID Token against that nonce. OAuth-only clients can refresh without a nonce.
+The refresh method repeats the configured resource value. Use a replacement refresh token when EliD returns one. Keep the submitted refresh token when the response omits a replacement.
+
+For OpenID Connect clients, pass the initial authentication nonce. A refreshed ID Token can omit `nonce`. If it contains `nonce`, the client requires a match with the initial value. The client verifies its signature and claims.
+
+OAuth-only clients can refresh without a nonce.
 
 The response may omit an ID Token. Keep the prior verified identity in the application session when it does. Save token updates atomically. EliD may replace refresh tokens and reject replay.
 

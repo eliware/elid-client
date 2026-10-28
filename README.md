@@ -2,7 +2,7 @@
 
 ## @eliware/elid-client [![npm](https://img.shields.io/npm/v/@eliware/elid-client)](https://www.npmjs.com/package/@eliware/elid-client) [![License](https://img.shields.io/github/license/eliware/elid-client)](https://github.com/eliware/elid-client/blob/main/LICENSE) [![CI](https://github.com/eliware/elid-client/actions/workflows/ci.yaml/badge.svg)](https://github.com/eliware/elid-client/actions/workflows/ci.yaml)
 
-Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token retrieval, and session management.
+Node.js server-side OAuth and OpenID Connect client for EliD applications.
 
 ## Table of Contents
 

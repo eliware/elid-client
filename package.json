@@ -2,7 +2,7 @@
   "name": "@eliware/elid-client",
   "version": "15.0.1",
   "type": "module",
-  "description": "Node.js OAuth 2.1 client library for EliD issuer discovery, PKCE authentication, token retrieval, and session management.",
+  "description": "Node.js server-side OAuth and OpenID Connect client for EliD applications.",
   "keywords": [
     "eliware",
     "oauth2",

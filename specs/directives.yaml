@@ -4,6 +4,9 @@ directives:
   - id: E-1331.0
     dos:
       - Build `@eliware/elid-client` as the shared Node.js client for EliD applications.
+      - >-
+        Describe the package as a Node.js server-side OAuth and OpenID Connect client for EliD
+        applications.
       - Support Node.js server-side OAuth clients and backends for frontend applications.
       - >-
         Keep the library framework-neutral and provide server-side protocol operations and
@@ -107,6 +110,7 @@ directives:
       - Publish only through the approved Operations release handoff.
     donts:
       - Do not ship browser OAuth code, browser UI, or application session storage.
+      - Do not claim that package metadata provides application session management.
       - Do not expose client secrets or server-held tokens to browser JavaScript.
       - Do not require an application-specific web framework or session architecture.
       - Do not add implicit, hybrid, or resource-owner-password flows.

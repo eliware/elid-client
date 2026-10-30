@@ -103,6 +103,7 @@ test("rejects non-JSON, oversized, malformed, and non-object responses", async (
     response("null"),
     response("[]"),
     response('"text"'),
+    { ok: true, status: 200, text: async () => "{}" },
   ]) {
     await expect(requestJson(async () => result, "https://issuer.example")).rejects.toMatchObject({
       code: "invalid_response",

@@ -1,5 +1,6 @@
 import { ElidClientError } from "../errors/client-error.mjs";
 import { normalizeTokenResponse } from "./normalize-response.mjs";
+import { validateTokenResponse } from "./token-response.mjs";
 
 export function createTokenResponseCompleter(config, verifyClaims) {
   return async function completeTokenResponse(
@@ -10,6 +11,7 @@ export function createTokenResponseCompleter(config, verifyClaims) {
     allowMissingNonce,
     priorIdentity,
   ) {
+    validateTokenResponse(response);
     const tokens = normalizeTokenResponse(response);
     if (!config.scopes.includes("openid")) {
       return {

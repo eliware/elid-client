@@ -9,16 +9,7 @@ function response(body, contentType = "application/json") {
   };
 }
 
-test("maps OAuth error responses to safe typed errors", async () => {
-  await expect(readError(response('{"error":"invalid_grant"}'))).resolves.toMatchObject({
-    code: "oauth_error",
-    oauthCode: "invalid_grant",
-    status: 400,
-    message: "The identity provider returned an OAuth error.",
-  });
-});
-
-test("maps malformed, oversized, and non-JSON error responses safely", async () => {
+test("maps HTTP failures to a generic safe error", () => {
   for (const result of [
     response("{", "application/json"),
     response("x".repeat(1000001), "application/json"),
@@ -26,7 +17,7 @@ test("maps malformed, oversized, and non-JSON error responses safely", async () 
     response("private detail", "text/plain"),
     { status: 400 },
   ]) {
-    await expect(readError(result)).resolves.toMatchObject({
+    expect(readError(result)).toMatchObject({
       code: "http_error",
       status: result.status,
       message: "The identity provider rejected the request.",

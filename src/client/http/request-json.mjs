@@ -1,5 +1,6 @@
 import { ElidClientError } from "../errors/client-error.mjs";
 import { readError } from "./read/error.mjs";
+import { readOAuthError } from "./read/oauth-error.mjs";
 import { readResponseText } from "./read/response/text.mjs";
 
 export async function requestJson(fetchImplementation, url, options = {}) {
@@ -28,8 +29,8 @@ export async function requestJson(fetchImplementation, url, options = {}) {
     if (method === "GET" && transient && options.retry !== false) {
       return requestJson(fetchImplementation, url, { ...options, retry: false });
     }
-    const error = await readError(response);
-    throw error;
+    const oauthError = await readOAuthError(response);
+    throw oauthError ?? readError(response);
   }
   if (response.status === 204) {
     if (options.allowEmpty) return undefined;

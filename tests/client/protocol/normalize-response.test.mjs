@@ -20,3 +20,14 @@ test("normalizes an OAuth token response", () => {
     idToken: "signed-id-token",
   });
 });
+
+test("maps token fields without validating their values", () => {
+  expect(normalizeTokenResponse({})).toEqual({
+    accessToken: undefined,
+    refreshToken: undefined,
+    tokenType: "Bearer",
+    expiresIn: undefined,
+    scope: undefined,
+    idToken: undefined,
+  });
+});

@@ -6,6 +6,10 @@
 
 - Added safe operation debug records through `@eliware/common`.
 
+### Changed
+
+- Updated runtime dependencies to `@eliware/common` 15.0.1 and `jose` 6.2.14.
+
 ### Fixed
 
 - Reject ID Tokens when `exp` is at or before the current time. Ignore clock tolerance for expiration.

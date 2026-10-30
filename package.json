@@ -46,7 +46,7 @@
     "node": ">=26"
   },
   "dependencies": {
-    "@eliware/common": "^15.0.1",
+    "@eliware/log": "^15.0.1",
     "jose": "^6.2.14"
   },
   "devDependencies": {

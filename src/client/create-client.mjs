@@ -1,4 +1,4 @@
-import { log } from "@eliware/common";
+import { log } from "@eliware/log";
 import { createAuthorizationRequest } from "./authorization/create/request.mjs";
 import { validateTransaction } from "./authorization/validate-transaction.mjs";
 import { ElidClientError } from "./errors/client-error.mjs";

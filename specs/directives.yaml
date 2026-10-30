@@ -69,7 +69,7 @@ directives:
       - >-
         Redact diagnostics and exclude credentials, authorization codes, tokens, verifiers, and
         user input from logs.
-      - Use `@eliware/common` logging with an injectable logger and structured operation context.
+      - Use `@eliware/log` with an injectable logger and structured operation context.
       - >-
         Replace the greeting sample with focused native ESM modules and align exports with
         declarations.

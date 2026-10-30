@@ -4,11 +4,11 @@
 
 ### Added
 
-- Added safe operation debug records through `@eliware/common`.
+- Added safe operation debug records through `@eliware/log`.
 
 ### Changed
 
-- Updated runtime dependencies to `@eliware/common` 15.0.1 and `jose` 6.2.14.
+- Updated runtime dependencies to `@eliware/log` 15.0.1 and `jose` 6.2.14.
 
 ### Fixed
 

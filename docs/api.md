@@ -31,13 +31,13 @@ const client = createEliDClient({
 | `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                                |
 | `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`.     |
 | `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.             |
-| `logger`                | No       | A logger object with `info` and optional `debug` methods. The default is `@eliware/common`.    |
+| `logger`                | No       | A logger object with `info` and optional `debug` methods. The default is `@eliware/log`.       |
 
-Pass a logger from `@eliware/common` to enable debug records:
+Pass a logger from `@eliware/log` to enable debug records:
 
 ```js
 import { createEliDClient } from "@eliware/elid-client";
-import { createLogger } from "@eliware/common";
+import { createLogger } from "@eliware/log";
 
 const logger = createLogger({ level: "debug", format: "json", timestamp: true });
 const client = createEliDClient({

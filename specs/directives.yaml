@@ -37,6 +37,9 @@ directives:
         Validate ID Token issuer, audience, `azp` when required, expiration, issue time, and
         nonce when configured scopes include `openid`.
       - >-
+        Reject ID Tokens when expiration is at or before the current time. Do not apply clock
+        tolerance to expiration.
+      - >-
         Accept OAuth token responses without an ID Token when configured scopes omit `openid`.
       - Use the `(issuer, subject)` pair as the stable account identity.
       - Keep optional profile claims as provider data, not guaranteed fields.

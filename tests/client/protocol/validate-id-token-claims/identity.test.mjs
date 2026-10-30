@@ -16,6 +16,8 @@ test.each([
   [{ ...claims, iat: Number.NaN }],
   [{ ...claims, exp: undefined }],
   [{ ...claims, exp: Number.POSITIVE_INFINITY }],
+  [{ ...claims, exp: nowSeconds }],
+  [{ ...claims, exp: nowSeconds - 1 }],
   [{ ...claims, iat: nowSeconds + 6 }],
   [{ ...claims, iat: nowSeconds - 86406 }],
 ])("rejects invalid subject or time claims", (payload) => {

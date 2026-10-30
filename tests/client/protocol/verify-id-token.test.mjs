@@ -130,6 +130,24 @@ test("rejects missing identity claims and future issue times", async () => {
   });
 });
 
+test("rejects an expired token within the configured clock tolerance", async () => {
+  const keys = await createOidcKeys();
+  const token = await signIdToken(
+    keys.privateKey,
+    { nonce, iat: now / 1000 - 10, exp: now / 1000 - 2 },
+    {
+      issuer,
+      audience: clientId,
+      subject: "user-1",
+      issuedAt: now / 1000 - 10,
+      expiresAt: now / 1000 - 2,
+    },
+  );
+  await expect(
+    verifyIdToken(token, validation(keys.publicKey, { clockToleranceSeconds: 5 })),
+  ).rejects.toMatchObject({ code: "invalid_id_token" });
+});
+
 test("validates authorized party and multi-audience tokens", async () => {
   const keys = await createOidcKeys();
   const claims = { nonce, iat: now / 1000, exp: now / 1000 + 300 };

@@ -17,21 +17,21 @@ const client = createEliDClient({
 });
 ```
 
-| Option                  | Required | Description                                                                                 |
-| ----------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                                   |
-| `clientId`              | Yes      | The client ID registered for this application.                                              |
-| `clientSecret`          | No       | The secret for a confidential client. Keep it on the server.                                |
-| `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                        |
-| `scopes`                | Yes      | Unique OAuth scope values. Include `openid` for user sign-in.                               |
-| `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.                |
-| `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                                 |
-| `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.                  |
-| `clockToleranceSeconds` | No       | The allowed ID Token clock difference. The default is `5`.                                  |
-| `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                             |
-| `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`.  |
-| `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.          |
-| `logger`                | No       | A logger object with `info` and optional `debug` methods. The default is `@eliware/common`. |
+| Option                  | Required | Description                                                                                    |
+| ----------------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                                      |
+| `clientId`              | Yes      | The client ID registered for this application.                                                 |
+| `clientSecret`          | No       | The secret for a confidential client. Keep it on the server.                                   |
+| `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                           |
+| `scopes`                | Yes      | Unique OAuth scope values. Include `openid` for user sign-in.                                  |
+| `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.                   |
+| `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                                    |
+| `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.                     |
+| `clockToleranceSeconds` | No       | The allowed issue-time difference. It does not extend ID Token expiration. The default is `5`. |
+| `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                                |
+| `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`.     |
+| `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.             |
+| `logger`                | No       | A logger object with `info` and optional `debug` methods. The default is `@eliware/common`.    |
 
 Pass a logger from `@eliware/common` to enable debug records:
 
@@ -62,7 +62,7 @@ console.log(metadata.issuer);
 
 The client loads OpenID Connect discovery metadata from the configured issuer. It rejects an issuer mismatch, unsafe endpoint URL, or missing PKCE S256 support. It caches validated metadata and uses the advertised endpoints.
 
-The client verifies ID Tokens with issuer JWKS. The JOSE verifier caches signing keys and refreshes them when the issuer changes signing keys.
+The client verifies ID Tokens with issuer JWKS. It rejects a token when `exp` is at or before the current time. Clock tolerance does not extend expiration. The JOSE verifier caches signing keys and refreshes them when the issuer changes signing keys.
 
 `discover()` returns the validated metadata object. Its endpoint properties use standard names such as `authorization_endpoint`, `token_endpoint`, `userinfo_endpoint`, `jwks_uri`, and `revocation_endpoint`. The returned object is a copy. Do not modify it to change client behavior.
 

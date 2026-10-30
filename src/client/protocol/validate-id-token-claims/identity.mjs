@@ -9,6 +9,7 @@ export function validateIdTokenIdentity(
     payload.sub.length === 0 ||
     !Number.isFinite(payload.iat) ||
     !Number.isFinite(payload.exp) ||
+    payload.exp <= nowSeconds ||
     payload.iat > nowSeconds + clockToleranceSeconds ||
     nowSeconds - payload.iat > maxIdTokenAgeSeconds + clockToleranceSeconds
   ) {

@@ -66,7 +66,7 @@ directives:
       - >-
         Redact diagnostics and exclude credentials, authorization codes, tokens, verifiers, and
         user input from logs.
-      - Use `@eliware/log` 15.0.1 with an injectable logger and structured operation context.
+      - Use `@eliware/common` logging with an injectable logger and structured operation context.
       - >-
         Replace the greeting sample with focused native ESM modules and align exports with
         declarations.
@@ -77,7 +77,8 @@ directives:
       - >-
         Keep production credentials out of smoke setup and production issuers out of automated
         tests.
-      - Keep package metadata at 15.0.1 and release notes to one initial baseline section.
+      - Keep package metadata and lockfile versions aligned for each release.
+      - Keep one dated release notes section for each package version.
       - >-
         Run `npm ci`, `npm test`, `npm run typecheck`, and `npm run pack` before release
         consideration.

@@ -11,6 +11,8 @@ npm install @eliware/elid-client
 ```
 
 Import the public API from `@eliware/elid-client`. The package uses native ESM and exposes TypeScript declarations.
+Install a published release from public npm. Each release uses a `MAJOR.MINOR.PATCH` version and npm provenance.
+Import the supported API from the package root. The archive includes source files, documentation, examples, specifications, and package metadata.
 
 ## Configure a client
 
@@ -24,7 +26,7 @@ import { createEliDClient } from "@eliware/elid-client";
 const client = createEliDClient({
   issuer: process.env.ELID_ISSUER_URL,
   clientId: process.env.ELID_CLIENT_ID,
-  clientSecret: process.env.ELID_CLIENT_SECRET,
+  clientSecret: process.env.ELID_CLIENT_SECRET || undefined,
   redirectUri: process.env.ELID_REDIRECT_URI,
   scopes: process.env.ELID_SCOPES.trim().split(/\s+/),
   resource: process.env.ELID_RESOURCE || undefined,
@@ -36,16 +38,17 @@ For a public client, omit `clientSecret`. Use an HTTPS issuer and redirect URI i
 Include `openid` in the scopes for user sign-in. Omit `openid` for API access without user sign-in. OAuth-only transactions do not contain a nonce, and their token results do not contain ID Token or identity fields.
 
 Set `ELID_SCOPES` to one or more space-separated scopes. Do not include an empty value. Set `ELID_RESOURCE` only when the API needs a resource indicator and EliD advertises support for it. The issuer must support Authorization Code and PKCE S256.
+Set `NODE_EXTRA_CA_CERTS` before Node.js starts when a local test issuer uses a private CA certificate.
 
-| Environment variable  | Purpose                                                   |
-| --------------------- | --------------------------------------------------------- |
-| `ELID_ISSUER_URL`     | The exact issuer URL configured for EliD discovery.       |
-| `ELID_CLIENT_ID`      | The client ID registered for this application.            |
-| `ELID_CLIENT_SECRET`  | Optional secret for a confidential client.                |
-| `ELID_REDIRECT_URI`   | The exact callback URI registered with EliD.              |
-| `ELID_SCOPES`         | A space-separated list of unique OAuth scopes.            |
-| `ELID_RESOURCE`       | Optional resource identifier for an audience-bound token. |
-| `NODE_EXTRA_CA_CERTS` | Optional path to a trusted CA file for local testing.     |
+| Environment variable  | Required | Default | Example                                  |
+| --------------------- | -------- | ------- | ---------------------------------------- |
+| `ELID_ISSUER_URL`     | Yes      | None    | `https://login.example.com`              |
+| `ELID_CLIENT_ID`      | Yes      | None    | `example-web`                            |
+| `ELID_CLIENT_SECRET`  | No       | Unset   | `<confidential-client-secret>`           |
+| `ELID_REDIRECT_URI`   | Yes      | None    | `https://app.example.com/oauth/callback` |
+| `ELID_SCOPES`         | Yes      | None    | `openid profile` or `api.read`           |
+| `ELID_RESOURCE`       | No       | Unset   | `https://api.example.com/`               |
+| `NODE_EXTRA_CA_CERTS` | No       | Unset   | `./certs/issuer-ca.pem`                  |
 
 ## Start a server-side sign-in
 

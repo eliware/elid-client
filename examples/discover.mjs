@@ -11,7 +11,7 @@ const client = createEliDClient({
   issuer: process.env.ELID_ISSUER_URL,
   clientId: process.env.ELID_CLIENT_ID,
   redirectUri: process.env.ELID_REDIRECT_URI,
-  scopes: process.env.ELID_SCOPES.split(" "),
+  scopes: process.env.ELID_SCOPES.trim().split(/\s+/),
   clientSecret: process.env.ELID_CLIENT_SECRET || undefined,
   resource: process.env.ELID_RESOURCE || undefined,
 });

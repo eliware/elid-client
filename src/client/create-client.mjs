@@ -1,4 +1,4 @@
-import log from "@eliware/log";
+import { log } from "@eliware/common";
 import { createAuthorizationRequest } from "./authorization/create/request.mjs";
 import { validateTransaction } from "./authorization/validate-transaction.mjs";
 import { ElidClientError } from "./errors/client-error.mjs";
@@ -20,8 +20,10 @@ export function createEliDClient(options = {}) {
   const loadMetadata = createMetadataLoader(config);
   const verifyClaims = createIdTokenVerifier(config);
   const completeTokenResponse = createTokenResponseCompleter(config, verifyClaims);
+  const logDebug = (message, operation) => config.logger.debug?.(message, { operation });
 
   async function exchangeAuthorizationCode(input = {}) {
+    logDebug("Authorization code exchange started", "exchangeAuthorizationCode");
     const { code, transaction } = validateTransaction(input, config);
     const metadata = await loadMetadata();
     const parameters = {
@@ -38,6 +40,7 @@ export function createEliDClient(options = {}) {
   }
 
   async function refreshTokens(input = {}) {
+    logDebug("Token refresh started", "refreshTokens");
     const { refreshToken, nonce } = input;
     const identity = validateIdentity(input.identity, config.issuer);
     if (config.scopes.includes("openid") && (typeof nonce !== "string" || nonce.length === 0)) {
@@ -55,6 +58,7 @@ export function createEliDClient(options = {}) {
   }
 
   async function getUserInfo(accessToken, expectedSubject) {
+    logDebug("UserInfo request started", "getUserInfo");
     if (!config.scopes.includes("openid")) {
       throw new ElidClientError(
         "unsupported_provider",
@@ -74,12 +78,14 @@ export function createEliDClient(options = {}) {
   }
 
   async function revokeToken(token, tokenTypeHint) {
+    logDebug("Token revocation started", "revokeToken");
     const metadata = await loadMetadata();
     await sendRevocation(config.fetch, config, metadata, token, tokenTypeHint);
     config.logger.info("Token revoked", { operation: "revokeToken" });
   }
 
   async function createRequest() {
+    logDebug("Authorization request creation started", "createAuthorizationRequest");
     const metadata = await loadMetadata();
     const request = createAuthorizationRequest(config, metadata);
     config.logger.info("Authorization request created", {
@@ -89,7 +95,10 @@ export function createEliDClient(options = {}) {
   }
 
   return Object.freeze({
-    discover: async () => structuredClone(await loadMetadata()),
+    discover: async () => {
+      logDebug("Issuer discovery started", "discoverIssuer");
+      return structuredClone(await loadMetadata());
+    },
     createAuthorizationRequest: createRequest,
     exchangeAuthorizationCode,
     getUserInfo,

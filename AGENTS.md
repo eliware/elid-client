@@ -2,40 +2,40 @@
 
 ## Project
 
-Repository: `eliware/elid-client`. Purpose: provide shared Node.js OAuth and OpenID Connect operations for EliD applications.
+Repository: `eliware/elid-client`. Purpose: provide a Node.js server-side OAuth and OpenID Connect client for EliD applications.
 
 ## Scope and boundaries
 
-Keep repository-specific requirements in `specs/directives.yaml`. Keep shared requirements in `eliware/test`, documentation indexes in `eliware/docs`, and release procedures in `eliware/operations`.
+Keep repository requirements in `specs/directives.yaml`.
 
 ## Layout
 
-Keep implementation modules under `src/` and mirror them under `tests/`. Keep public declarations in `src/index.d.ts`, documentation in `docs/`, requirements in `specs/`, and runnable examples in `examples/`.
+Use `README.md` and `specs/README.md` to find maintained files.
 
 ## Development
 
-Give each source and test module one cohesive purpose. Create a focused module and mirrored test when a change adds a distinct responsibility.
+Give each source and test module one cohesive purpose.
 
 ## Validation
 
-Use Node.js 26 or later, native ESM, and npm.
+Use Node.js 26 or later and native ESM.
 
 - Run `npm ci` after dependency changes.
 - Run `npm test` for aggregate validation.
 - Run `npm run lint` for lint checks.
 - Run `npm run audit` for dependency checks.
+- Run `npm run format` only when you intend to format files.
 - Run `npm run format:check` to check formatting.
 - Run `npm run typecheck` to check the TypeScript declaration.
 - Run `npm run pack` to check package contents.
-- Run `npm run format` only when you intend to write formatting changes.
 
 ## Security
 
-Keep credentials, tokens, and private data out of Git. Keep machine-specific runtime state out of source, tests, examples, and documentation.
+Keep credentials, tokens, private data, and runtime state out of Git.
 
 ## Changes
 
-Update specifications, tests, declarations, documentation, examples, and release notes when a change affects them. Update the nearest index when you add a document.
+Keep each document in the repository that owns its content. Update its nearest index when you add a document.
 
 ## Library
 
@@ -47,4 +47,4 @@ Run the full `npm test` suite for final validation before a commit, milestone, o
 
 ## npm publication
 
-Use `package.json` as the package version source and `RELEASE_NOTES.md` for user-visible changes. Run `npm run pack` before release consideration. Publish only through the approved Operations release handoff.
+Run `npm run pack` before release consideration. Publish only through the approved Operations release handoff.

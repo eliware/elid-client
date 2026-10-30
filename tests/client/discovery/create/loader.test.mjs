@@ -42,7 +42,7 @@ function config(fetch, extra = {}) {
 
 test("loads, validates, and caches issuer metadata", async () => {
   const fetcher = jest.fn(async () => jsonResponse(metadata()));
-  const logger = { info: jest.fn() };
+  const logger = { info: jest.fn(), debug: jest.fn() };
   const load = createMetadataLoader(config(fetcher, { logger }));
   const first = await load();
   const second = await load();
@@ -51,6 +51,12 @@ test("loads, validates, and caches issuer metadata", async () => {
   expect(first.token_endpoint_auth_methods_supported).toEqual(["client_secret_basic", "none"]);
   expect(fetcher).toHaveBeenCalledTimes(1);
   expect(logger.info).toHaveBeenCalledWith("Issuer metadata loaded", {
+    operation: "discoverIssuer",
+  });
+  expect(logger.debug).toHaveBeenCalledWith("Issuer metadata request started", {
+    operation: "discoverIssuer",
+  });
+  expect(logger.debug).toHaveBeenCalledWith("Issuer metadata cache hit", {
     operation: "discoverIssuer",
   });
   expect(fetcher.mock.calls[0][0].href).toBe(
@@ -86,10 +92,14 @@ test("shares concurrent metadata requests", async () => {
         resolveResponse = resolve;
       }),
   );
-  const load = createMetadataLoader(config(fetcher));
+  const logger = { info: jest.fn(), debug: jest.fn() };
+  const load = createMetadataLoader(config(fetcher, { logger }));
   const first = load();
   const second = load();
   expect(fetcher).toHaveBeenCalledTimes(1);
   resolveResponse(jsonResponse(metadata()));
   await expect(Promise.all([first, second])).resolves.toEqual([await first, await first]);
+  expect(logger.debug).toHaveBeenCalledWith("Issuer metadata request already in progress", {
+    operation: "discoverIssuer",
+  });
 });

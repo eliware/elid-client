@@ -23,7 +23,7 @@ Node.js server-side OAuth and OpenID Connect client for EliD applications.
 
 ## Features
 
-Build server-side EliD integrations with shared OAuth and OpenID Connect operations. Use OAuth-only scopes for API access without user sign-in. Include `openid` for OpenID Connect sign-in. The library supports issuer discovery, Authorization Code with PKCE, ID Token verification, UserInfo, token refresh, and token revocation. Keep application sessions, cookies, routes, and storage in the consuming application.
+Use shared issuer discovery, Authorization Code with PKCE, ID Token verification, UserInfo, token refresh, and token revocation.
 
 ## Requirements
 
@@ -31,39 +31,39 @@ Use Node.js 26 or later.
 
 ## Setup
 
-Install `@eliware/elid-client` in a Node.js server application. Read [setup guidance](docs/usage.md) for configuration instructions.
+Install `@eliware/elid-client` with `npm install @eliware/elid-client`. Follow the [usage guide](docs/usage.md) to configure a client.
 
 ## Usage
 
-Create one client instance for each EliD application. Store each authorization transaction in the application session store and consume it once during callback handling. Read the [user guide](docs/README.md) and [release notes](RELEASE_NOTES.md).
+Store authorization transactions and tokens in server-side application state. Read the [documentation index](docs/README.md), [usage guide](docs/usage.md), [API reference](docs/api.md), and [release notes](RELEASE_NOTES.md).
 
 ## Development
 
-Read [AGENTS.md](AGENTS.md) and the [specifications index](specs/README.md) before you change files.
+See [AGENTS.md](AGENTS.md) and the [specifications index](specs/README.md) for repository instructions.
 
 ## Testing
 
-Run `npm test` for repository checks. Run `npm run typecheck` to validate the TypeScript declaration.
+Run `npm test` for aggregate validation.
 
 ## Troubleshooting
 
-Read the [usage guide](docs/usage.md) for installation, configuration, and client operation guidance.
+Read the [API error guide](docs/api.md#errors) and [usage guide](docs/usage.md).
 
 ## Security
 
-Keep client secrets and server-held tokens on the server. Do not log credentials, authorization codes, tokens, or verifiers.
+Keep client secrets and tokens on the server. Do not log credentials, authorization codes, tokens, or verifiers.
 
 ## API
 
-See the [API reference](docs/api.md) for client creation, authorization, token handling, and typed errors.
+Import `createEliDClient` and `ElidClientError` from the package root. Read the [API reference](docs/api.md).
 
 ## Packaging
 
-Run `npm run pack` to check package contents. Follow approved release steps before publication.
+Install a published version from npm. The package uses native ESM and includes TypeScript declarations.
 
 ## Examples
 
-See [example guidance](examples/README.md) for prerequisites, commands, and expected output.
+Follow the [example guide](examples/README.md) to run the discovery example.
 
 ## Support
 

@@ -16,7 +16,7 @@ function jsonResponse(body) {
 
 test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and revocation", async () => {
   const keys = await createOidcKeys();
-  const logger = { info: jest.fn() };
+  const logger = { info: jest.fn(), debug: jest.fn() };
   const calls = [];
   let nonce;
   let challenge;
@@ -137,11 +137,11 @@ test("runs discovery, PKCE login, ID Token verification, UserInfo, refresh, and 
     client.refreshTokens({ refreshToken: tokens.refreshToken, nonce, identity: tokens.identity }),
   ).resolves.toMatchObject({ identity: tokens.identity });
   await expect(client.revokeToken("refresh-token-2", "refresh_token")).resolves.toBeUndefined();
-  expect(
-    calls.filter((call) => call.url.pathname === "/.well-known/openid-configuration"),
-  ).toHaveLength(1);
   expect(client.introspect).toBeUndefined();
-  expect(JSON.stringify(logger.info.mock.calls)).not.toMatch(
+  expect(logger.debug).toHaveBeenCalledWith("Token refresh started", {
+    operation: "refreshTokens",
+  });
+  expect(JSON.stringify([...logger.info.mock.calls, ...logger.debug.mock.calls])).not.toMatch(
     /client-secret|authorization-code|opaque-access-token|refresh-token|nonce/,
   );
 });

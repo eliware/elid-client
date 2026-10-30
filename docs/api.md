@@ -10,28 +10,46 @@ import { createEliDClient } from "@eliware/elid-client";
 const client = createEliDClient({
   issuer: "https://login.example.com",
   clientId: "example-web",
-  clientSecret: process.env.ELID_CLIENT_SECRET,
+  clientSecret: process.env.ELID_CLIENT_SECRET || undefined,
   redirectUri: "https://app.example.com/oauth/callback",
   scopes: ["openid", "profile"],
   resource: "https://api.example.com/",
 });
 ```
 
-| Option                  | Required | Description                                                                                |
-| ----------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                                  |
-| `clientId`              | Yes      | The client ID registered for this application.                                             |
-| `clientSecret`          | No       | The secret for a confidential client. Keep it on the server.                               |
-| `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                       |
-| `scopes`                | Yes      | Unique OAuth scope values. Include `openid` for user sign-in.                              |
-| `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.               |
-| `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                                |
-| `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.                 |
-| `clockToleranceSeconds` | No       | The allowed ID Token clock difference. The default is `5`.                                 |
-| `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                            |
-| `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`. |
-| `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.         |
-| `logger`                | No       | A logger object with an `info` method. The default is `@eliware/log`.                      |
+| Option                  | Required | Description                                                                                 |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `issuer`                | Yes      | The exact issuer URL from EliD discovery.                                                   |
+| `clientId`              | Yes      | The client ID registered for this application.                                              |
+| `clientSecret`          | No       | The secret for a confidential client. Keep it on the server.                                |
+| `redirectUri`           | Yes      | The exact registered HTTPS callback URI without a query or fragment.                        |
+| `scopes`                | Yes      | Unique OAuth scope values. Include `openid` for user sign-in.                               |
+| `resource`              | No       | The API resource identifier. EliD must advertise resource indicator support.                |
+| `timeoutMs`             | No       | The request timeout in milliseconds. The default is `5000`.                                 |
+| `metadataCacheMs`       | No       | The issuer metadata cache period in milliseconds. The default is `300000`.                  |
+| `clockToleranceSeconds` | No       | The allowed ID Token clock difference. The default is `5`.                                  |
+| `maxIdTokenAgeSeconds`  | No       | The maximum age of an ID Token. The default is `86400` seconds.                             |
+| `fetch`                 | No       | A replacement Fetch function for controlled transports. The default is `globalThis.fetch`.  |
+| `now`                   | No       | A clock that returns milliseconds since the Unix epoch. The default is `Date.now`.          |
+| `logger`                | No       | A logger object with `info` and optional `debug` methods. The default is `@eliware/common`. |
+
+Pass a logger from `@eliware/common` to enable debug records:
+
+```js
+import { createEliDClient } from "@eliware/elid-client";
+import { createLogger } from "@eliware/common";
+
+const logger = createLogger({ level: "debug", format: "json", timestamp: true });
+const client = createEliDClient({
+  issuer: "https://login.example.com",
+  clientId: "example-web",
+  redirectUri: "https://app.example.com/oauth/callback",
+  scopes: ["openid", "profile"],
+  logger,
+});
+```
+
+Debug records describe operation progress and issuer metadata cache state. They omit credentials, tokens, authorization codes, and user claims.
 
 The issuer and protocol endpoints must use HTTPS. The library permits HTTP issuer URLs on loopback hosts for local use. Issuer and callback URLs cannot include query strings or fragments.
 

@@ -1,6 +1,6 @@
 {
   "name": "@eliware/elid-client",
-  "version": "15.0.1",
+  "version": "15.0.2",
   "type": "module",
   "description": "Node.js server-side OAuth and OpenID Connect client for EliD applications.",
   "keywords": [
@@ -46,8 +46,8 @@
     "node": ">=26"
   },
   "dependencies": {
-    "@eliware/log": "^15.0.1",
-    "jose": "6.2.13"
+    "@eliware/common": "^15.0.1",
+    "jose": "^6.2.14"
   },
   "devDependencies": {
     "@eliware/test": "^15.0.1",

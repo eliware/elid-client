@@ -1,4 +1,4 @@
-import type { LoggerWithConfiguredLevels } from "@eliware/log";
+import type { LoggerWithConfiguredLevels } from "@eliware/common";
 
 export type AuthorizationTransaction = {
   state: string;

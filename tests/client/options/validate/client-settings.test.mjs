@@ -50,6 +50,7 @@ test.each([
   [{ ...valid, now: 1 }],
   [{ ...valid, logger: null }],
   [{ ...valid, logger: {} }],
+  [{ ...valid, logger: { info: () => {}, debug: true } }],
 ])("rejects invalid scalar or dependency settings", (options) => {
   expect(() => validateClientSettings(options)).toThrow();
 });

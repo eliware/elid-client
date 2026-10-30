@@ -53,9 +53,13 @@ export function validateClientSettings(options) {
     options.logger !== undefined &&
     (options.logger === null ||
       typeof options.logger !== "object" ||
-      typeof options.logger.info !== "function")
+      typeof options.logger.info !== "function" ||
+      (options.logger.debug !== undefined && typeof options.logger.debug !== "function"))
   ) {
-    throw new ElidClientError("invalid_configuration", "logger must provide an info method.");
+    throw new ElidClientError(
+      "invalid_configuration",
+      "logger must provide an info method and an optional debug method.",
+    );
   }
   return {
     clientId: options.clientId,
